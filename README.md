@@ -127,3 +127,64 @@ Regular Matches
 |               `bps` | `<range>`            | `>1048576` (>1Mbps), `>1073741824` (>1Gbps)                    | Calculated as average based on byte count and flow duration.
 |               `pps` | `<range>`            | `>1000000` (>1Mpps), `>1000000000` (>1Gpps)                    | Calculated as average based on packet count and flow duration.
 
+Examples
+===
+
+Some examples, the first two with their full (redacted) output.
+
+All flows to Liberty Global with at least 1Mbps
+====
+
+```
+$ ./flowdump 'dst asn 6830 and bps >1048576'
+2021/03/25 15:39:10 Kafka Consumer: Connecting to xxxxx.belwue.de:9093
+2021/03/25 15:39:13 Kafka Consumer: Connection established.
+15:10:15: xx.xx.xx.46:993 -> xx.xx.xx.67:42203, TCP, 1s, 1.920256 Mbps, 192 pps
+15:10:35: xx.xx.xx.60:1194 -> xx.xx.xx.47:31201, UDP, 60s, 1.888405 Mbps, 288 pps
+15:10:38: xx.xx.xx.10:80 -> xx.xx.xx.4:59357, TCP, 60s, 2.687479 Mbps, 230 pps
+15:10:14: xx.xx.xx.180:443 -> xx.xx.xx.133:55166, TCP, 1s, 2.498048 Mbps, 224 pps
+15:10:16: xx.xx.xx.180:443 -> xx.xx.xx.133:55168, TCP, 1s, 9.03936 Mbps, 800 pps
+15:10:36: xx.xx.xx.228:443 -> xx.xx.xx.118:32456, UDP, 57s, 2.057588 Mbps, 177 pps
+```
+
+Detect possible congestion
+====
+
+```
+$ ./flowdump 'status policerdrop or dsfield ce'
+2021/03/25 15:49:37 Kafka Consumer: Connecting to xxxxx.belwue.de:9093
+2021/03/25 15:49:37 Kafka Consumer: Connection established.
+15:48:51: xx.xx.xx.5:12067 -> xx.xx.xx.12:443, TCP, 1s, 4.736 Mbps, 400 pps
+15:48:52: xx.xx.xx.5:4334 -> xx.xx.xx.12:443, TCP, 1s, 4.736 Mbps, 400 pps
+15:48:52: xx.xx.xx.5:37164 -> xx.xx.xx.12:443, TCP, 1s, 7.104 Mbps, 600 pps
+15:48:57: xx.xx.xx.40:52824 -> xx.xx.xx.13:8080, TCP, 1s, 11.776 kbps, 32 pps
+15:48:58: xx.xx.xx.239:33114 -> xx.xx.xx.9:22, TCP, 1s, 25.6 kbps, 32 pps
+15:49:06: xx.xx.xx.39:51234 -> xx.xx.xx.40:22, TCP, 1s, 44.032 kbps, 64 pps
+15:49:08: xx.xx.xx.40:52824 -> xx.xx.xx.47:8080, TCP, 1s, 11.776 kbps, 32 pps
+15:49:07: xx.xx.xx.40:52824 -> xx.xx.xx.216:8080, TCP, 1s, 11.776 kbps, 32 pps
+```
+
+The first match tries to find traffic our own routers dropped, differentiated
+services congestion experienced is set on an end-to-end basis and just
+traverses.
+
+Find substantial TCP traffic that's never seen an ACK or FIN
+====
+
+```
+bps >1000000 and proto tcp and not (tcpflags ack or tcpflags fin)`
+```
+
+Matching for `proto tcp` is actually not needed in that case, a `tcpflags`
+matcher also ensures that.
+
+Find stuff we don't want to see from our peers
+====
+
+```
+incoming and (iface desc "IX" or iface desc "PNI") and (address 10.0.0.0/8 or address 192.168.0.0/16)
+```
+
+This assumes that github.com/bwNetFlow/processor_enricher was used to enrich
+the flows with interface descriptions from SNMP and that network engineers use
+some variant of `IX` and `PNI` in their descriptions somewhere.
