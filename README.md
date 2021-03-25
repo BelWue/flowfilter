@@ -163,9 +163,6 @@ traverses.
 bps >1000000 and proto tcp and not (tcpflags ack or tcpflags fin)`
 ```
 
-Matching for `proto tcp` is actually not needed in that case, a `tcpflags`
-matcher also ensures that.
-
 ##### Find stuff we don't want to see from our peers
 
 ```
