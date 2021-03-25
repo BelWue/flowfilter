@@ -380,9 +380,9 @@ func (f *Filter) Visit(n parser.Node, next func() error) error {
 	case *parser.TcpFlagMatch:
 		switch {
 		case node.TcpFlag != nil:
-			(*node).EvalResult = f.flowmsg.TCPFlags == uint32(*node.TcpFlag)
+			(*node).EvalResult = f.flowmsg.TCPFlags == uint32(*node.TcpFlag) && f.flowmsg.Proto == 6
 		case node.TcpFlagKey != nil:
-			(*node).EvalResult = f.flowmsg.TCPFlags&uint32(*node.TcpFlagKey) == uint32(*node.TcpFlagKey)
+			(*node).EvalResult = f.flowmsg.TCPFlags&uint32(*node.TcpFlagKey) == uint32(*node.TcpFlagKey) && f.flowmsg.Proto == 6
 		}
 	case *parser.VrfRangeMatch:
 		(*node).EvalResultSrc, _ = processNumericRange(node.NumericRange, uint64(f.flowmsg.IngressVrfID))
