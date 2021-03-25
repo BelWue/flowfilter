@@ -1,5 +1,4 @@
-Flow Filter
-==
+## Flow Filter
 
 This is the initial experiment on having a simple filtering DSL for flows. The
 `cmd/flowdump.go` utility is a first demo for how a tcpdump style command could
@@ -8,8 +7,7 @@ be implemented with this.
 It is meant as a base for user-provided filters and alerts within the bwNet
 platform, or also just as an addition to goflows protobuf format.
 
-Setup
-===
+### Setup
 
 Configuration of the flowdump script is done using environment vars only and
 highly specific to the current bwNet setup. Copy the follwing bash/fish script
@@ -34,13 +32,11 @@ set -x KAFKA_TOPIC flows
 set -x KAFKA_CONSUMER_GROUP yourname-any-suffix-you-like
 ```
 
-Syntax
-===
+### Syntax
 
-This paragraph will describe the filter syntax in what I consider the most understandable mannerj
+This paragraph will describe the filter syntax in what I consider the most understandable manner.
 
-Overall Structure
-====
+#### Overall Structure
 
 Every valid input constitutes an Expression. An Expression consists of a number
 of Statements combined using the Conjunctions `and` and `or`. Statements are
@@ -56,8 +52,7 @@ match foo and not match bar
 match foo and not (match bar or match baz)
 ```
 
-Matches
-====
+#### Matches
 
 Each Match falls in one of two categories: It either accepts a directional
 modifier (`src` and `dst`) or it does not. Their implementation is largely
@@ -66,8 +61,7 @@ compute both eventualities, counting on the selection of one of their results
 at a later point. If there is no direction provided for a directional field, it
 is equivalent to the expression `src match foo or dst match bar`.
 
-Literals
-=====
+#### Literals
 
 Matches use different literals in different constellations, and some matches accept further keywords/magic strings.
 
@@ -84,8 +78,7 @@ Matches use different literals in different constellations, and some matches acc
 |  `status` | `forwarded`, `dropped`, `acldeny`, `acldrop`, `policerdrop`, `unroutable`, `consumed`
 | `tcpflag` | `fin`, `syn`, `rst`, `psh`, `ack`, `urg`, `synack`, `cwr`, `ece`
 
-Directional Matches
-=====
+#### Directional Matches
 
 | Keyword             | Syntax         | Examples                                                            | Notes                                                     |
 | -------------------:| -------------- | ------------------------------------------------------------------- | --------------------------------------------------------- |
@@ -100,8 +93,7 @@ Directional Matches
 |           `netsize` | `<range>`      | `<24` (BGP filtered)                                                |
 |               `vrf` | `<range>`      |                                                                     |
 
-Regular Matches
-=====
+#### Regular Matches
 
 | Keyword             | Syntax               | Examples                                                       | Notes                                                                                           |
 | -------------------:| -------------------- | -------------------------------------------------------------- | ----------------------------------------------------------------------------------------------- |
@@ -127,13 +119,11 @@ Regular Matches
 |               `bps` | `<range>`            | `>1048576` (>1Mbps), `>1073741824` (>1Gbps)                    | Calculated as average based on byte count and flow duration.
 |               `pps` | `<range>`            | `>1000000` (>1Mpps), `>1000000000` (>1Gpps)                    | Calculated as average based on packet count and flow duration.
 
-Examples
-===
+#### Examples
 
 Some examples, the first two with their full (redacted) output.
 
-All flows to Liberty Global with at least 1Mbps
-====
+##### All flows to Liberty Global with at least 1Mbps
 
 ```
 $ ./flowdump 'dst asn 6830 and bps >1048576'
@@ -147,8 +137,7 @@ $ ./flowdump 'dst asn 6830 and bps >1048576'
 15:10:36: xx.xx.xx.228:443 -> xx.xx.xx.118:32456, UDP, 57s, 2.057588 Mbps, 177 pps
 ```
 
-Detect possible congestion
-====
+##### Detect possible congestion
 
 ```
 $ ./flowdump 'status policerdrop or dsfield ce'
@@ -168,8 +157,7 @@ The first match tries to find traffic our own routers dropped, differentiated
 services congestion experienced is set on an end-to-end basis and just
 traverses.
 
-Find substantial TCP traffic that's never seen an ACK or FIN
-====
+##### Find substantial TCP traffic that's never seen an ACK or FIN
 
 ```
 bps >1000000 and proto tcp and not (tcpflags ack or tcpflags fin)`
@@ -178,8 +166,7 @@ bps >1000000 and proto tcp and not (tcpflags ack or tcpflags fin)`
 Matching for `proto tcp` is actually not needed in that case, a `tcpflags`
 matcher also ensures that.
 
-Find stuff we don't want to see from our peers
-====
+##### Find stuff we don't want to see from our peers
 
 ```
 incoming and (iface desc "IX" or iface desc "PNI") and (address 10.0.0.0/8 or address 192.168.0.0/16)
