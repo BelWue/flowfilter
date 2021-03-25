@@ -258,11 +258,15 @@ func (f *Filter) Visit(n parser.Node, next func() error) error {
 			(*node).EvalResult = f.flowmsg.FlowDirection == 1
 		}
 	case *parser.IcmpMatch:
+		if f.flowmsg.Proto != 1 {
+			(*node).EvalResult = false
+			break
+		}
 		switch {
 		case node.Type != nil:
-			(*node).EvalResult = uint32(*node.Type) == f.flowmsg.DstPort/256 && f.flowmsg.Proto == 1
+			(*node).EvalResult = uint32(*node.Type) == f.flowmsg.DstPort/256
 		case node.Code != nil:
-			(*node).EvalResult = uint32(*node.Code) == f.flowmsg.DstPort%256 && f.flowmsg.Proto == 1
+			(*node).EvalResult = uint32(*node.Code) == f.flowmsg.DstPort%256
 		}
 	case *parser.IfSpeedRangeMatch:
 		(*node).EvalResultSrc, _ = processNumericRange(node.NumericRange, uint64(f.flowmsg.SrcIfSpeed)/1000)
@@ -378,11 +382,15 @@ func (f *Filter) Visit(n parser.Node, next func() error) error {
 			(*node).EvalResult = f.flowmsg.ForwardingStatus&uint32(*node.StatusKey) == uint32(*node.StatusKey)
 		}
 	case *parser.TcpFlagMatch:
+		if f.flowmsg.Proto != 6 {
+			(*node).EvalResult = false
+			break
+		}
 		switch {
 		case node.TcpFlag != nil:
-			(*node).EvalResult = f.flowmsg.TCPFlags == uint32(*node.TcpFlag) && f.flowmsg.Proto == 6
+			(*node).EvalResult = f.flowmsg.TCPFlags == uint32(*node.TcpFlag)
 		case node.TcpFlagKey != nil:
-			(*node).EvalResult = f.flowmsg.TCPFlags&uint32(*node.TcpFlagKey) == uint32(*node.TcpFlagKey) && f.flowmsg.Proto == 6
+			(*node).EvalResult = f.flowmsg.TCPFlags&uint32(*node.TcpFlagKey) == uint32(*node.TcpFlagKey)
 		}
 	case *parser.VrfRangeMatch:
 		(*node).EvalResultSrc, _ = processNumericRange(node.NumericRange, uint64(f.flowmsg.IngressVrfID))
