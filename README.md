@@ -67,7 +67,7 @@ Matches use different literals in different constellations, and some matches acc
 
 | Literal   | Syntax                                                                               |
 | ---------:| ------------------------------------------------------------------------------------ |
-|      `ip` | IP address, as accepted by `net.IP`.
+| `address` | IP address, as accepted by `net.IP`.
 |  `string` | Anything wrapped in either `"` or `'`.
 |     `int` | Unsigned Integer. In addition to decimal, `0x` and `0b` prefixes are allowed.
 |   `range` | `[<\|>]<int>\|<int>-<int>`, i.e. `4`, `4-10`, `<4` or `>4` are acceptable.
@@ -82,23 +82,23 @@ Matches use different literals in different constellations, and some matches acc
 
 | Keyword             | Syntax         | Examples                                                            | Notes                                                     |
 | -------------------:| -------------- | ------------------------------------------------------------------- | --------------------------------------------------------- |
-|           `address` | `<ip>[/<int>]` | `10.0.0.0/8` (private space)                                        | Anything recognized by `net.IP`. CIDR netmask is optional.
-|       `i[nter]face` | `<int>`        |                                                                     | Shorthand for the next command.
-|    `i[nter]face id` | `<int>`        |                                                                     | Refers to the interface SNMP ID as reported in Netflow.
-|  `i[nter]face name` | `<string>`     | `hu` (via 100G interface, matches `Hu0/1/1/1`)                      | Refers to the interface name (if applicable).
-|  `i[nter]face desc` | `<string>`     | `IX` (desc mentions exchanges), `tunnel` (indicates a pseudowire)   | Refers to the interface description (if applicable).
-| `i[nter]face speed` | `<range>`      | `100` (see `iface name` example)                                    | Refers to the interface speed (if applicable).
-|              `port` | `<range>`      | `<1000` (privileged), `22` (ssh), `9100-9999` (prometheus exporter) |
-|               `asn` | `<range>`      | `553` (ourselves), `64512-65534` (private asn)                      |
-|           `netsize` | `<range>`      | `<24` (BGP filtered)                                                |
-|               `vrf` | `<range>`      |                                                                     |
+|           `address` | `<address>[/<int>]` | `10.0.0.0/8` (private space)                                        | Anything recognized by `net.IP`. CIDR netmask is optional.
+|       `i[nter]face` | `<int>`             |                                                                     | Shorthand for the next command.
+|    `i[nter]face id` | `<int>`             |                                                                     | Refers to the interface SNMP ID as reported in Netflow.
+|  `i[nter]face name` | `<string>`          | `hu` (via 100G interface, matches `Hu0/1/1/1`)                      | Refers to the interface name (if applicable).
+|  `i[nter]face desc` | `<string>`          | `IX` (desc mentions exchanges), `tunnel` (indicates a pseudowire)   | Refers to the interface description (if applicable).
+| `i[nter]face speed` | `<range>`           | `100` (see `iface name` example)                                    | Refers to the interface speed (if applicable).
+|              `port` | `<range>`           | `<1000` (privileged), `22` (ssh), `9100-9999` (prometheus exporter) |
+|               `asn` | `<range>`           | `553` (ourselves), `64512-65534` (private asn)                      |
+|           `netsize` | `<range>`           | `<24` (BGP filtered)                                                |
+|               `vrf` | `<range>`           |                                                                     |
 
 #### Regular Matches
 
 | Keyword             | Syntax               | Examples                                                       | Notes                                                                                           |
 | -------------------:| -------------------- | -------------------------------------------------------------- | ----------------------------------------------------------------------------------------------- |
-|            `router` | `<ip>`               |                                                                | See `address` match. Refers to the router the Netflow originated on, aka the sampler address.
-|           `nexthop` | `<ip>`               |                                                                | See `address` match.
+|            `router` | `<address>`          |                                                                | See `address` match. Refers to the router the Netflow originated on, aka the sampler address.
+|           `nexthop` | `<address>`          |                                                                | See `address` match.
 |             `bytes` | `<range>`            |                                                                | Refers to the bytes transported by the flow.
 |           `packets` | `<range>`            |                                                                | Refers to the packets transported by the flow.
 |           `country` | `<cc>`               | `DE` (Germany), `US` (US)                                      | Refers to the remote addresses country code as added to the flow by some lookup (if applicable).
