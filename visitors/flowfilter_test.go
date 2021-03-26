@@ -99,15 +99,22 @@ var (
 func TestAccept(t *testing.T) {
 	tests := []string{
 		``,
+		// `address` `<address>[/<int>]`
 		`address 10.0.0.200`,
 		`address 10.0.0.0/24`,
 		`src address 10.0.0.200`,
 		`dst address 2001:7c0:0:254::6`,
 		`address 2001:7c0:0:254::/64`,
 		`address 10.0.0.200 or address 8.8.8.8`,
-		`proto 1`,
-		`proto icmp`,
-		`not proto 7`,
+		// `i[nter]face` `<int>`
+		`iface 1`,
+		`src interface 1`,
+		`iface name 'Hu'`,
+		`iface name "Te"`,
+		`iface desc 'cust'`,
+		`iface speed >0`,
+		`src iface speed 10-1000000`,
+		// `port` `<range>`
 		`port 0`,
 		`port 0-100`,
 		`port 1024-1024`,
@@ -118,42 +125,62 @@ func TestAccept(t *testing.T) {
 		`dst port 1024`,
 		`port >1`,
 		`port <1`,
-		`etype 0x0800`,
-		`etype 2048`,
-		`etype ipv4`,
-		`iface 1`,
-		`src interface 1`,
-		`iface name 'Hu'`,
-		`iface name "Te"`,
-		`iface desc 'cust'`,
-		`iface speed >0`,
-		`src iface speed 10-1000000`,
-		`bytes 20490000`,
-		`packets 0-400`,
-		`packets <1000`,
-		`bytes >1000`,
-		`samplingrate 32`,
+		// `asn` `<range>`
 		`asn 553`,
 		`asn <65000`,
 		`src asn 553`,
-		`cid 123 and incoming`,
-		`not cid 1283`,
-		`router 10.0.0.1`,
-		`country dE`,
-		`direction incoming`,
-		`incoming and country de`,
-		`duration >100 and not status dropped`,
-		`status forwarded`,
-		`not tcpflags ack`,
-		`nexthop 10.11.0.1`,
+		// `netsize` `<range>`
 		`netsize <24`,
+		// `vrf` `<range>`
 		`vrf 1`,
 		`dst vrf >1`,
+		// `router` `<address>`
+		`router 10.0.0.1`,
+		// `nexthop` `<address>`
+		`nexthop 10.11.0.1`,
+		// `bytes` `<range>`
+		`bytes 20490000`,
+		`bytes >1000`,
+		// `packets` `<range>`
+		`packets 0-400`,
+		`packets <1000`,
+		// `country` `<cc>`
+		`country dE`,
+		// `direction` `incoming|outgoing`
+		`direction incoming`,
+		`incoming and country de`,
+		// `normalized`
 		`not normalized`,
-		`icmp type 4`,
-		`bps 655680`,
+		// `duration` `<range>`
+		`duration >100 and not status dropped`,
 		`duration 250`,
+		// `etype` `<int>|etype
+		`etype 0x0800`,
+		`etype 2048`,
+		`etype ipv4`,
+		// `proto` `<int>|proto
+		`proto 1`,
+		`proto icmp`,
+		`not proto 7`,
+		// `status` `<int>|status
+		`status forwarded`,
+		// `tcpflags` `<int>|tcpflag
+		`not tcpflags ack`,
+		// `dsfield|iptos` <int>|dsstring
+		// `samplingrate` `<range>`
+		`samplingrate 32`,
+		`samplingrate <512`,
+		// `cid` `<range>`
+		`cid 123`,
+		`not cid 1283`,
+		// `icmp type` `<int>`
+		`icmp type 4`,
+		// `icmp code` `<int>`
+		`icmp code 0`,
+		// `bps` `<range>`
+		`bps 655680`,
 		`bps >100`,
+		// `pps` `<range>`
 		`pps >0`,
 	}
 
@@ -175,20 +202,86 @@ func TestAccept(t *testing.T) {
 
 func TestReject(t *testing.T) {
 	tests := []string{
+		// `address` `<address>[/<int>]`
 		`address 10.0.0.201`,
-		// `address 10.0.0.0/25`,
-		`src address 10.1.0.200`,
-		`dst address 10.0.0.200`,
-		`address 10.0.0.200 and address 8.8.8.8`,
-		`proto 7`,
-		`port 2 and port 0`,
-		`port 2-100`,
-		`port <0`,
-		`etype 0x0801`,
+		`address 10.0.0.0/30`,
+		`src address 10.0.0.201`,
+		`dst address 2001:7c0:0:254::8`,
+		`address 2001:7c0:0:255::/64`,
+		`address 10.0.0.201 or address 8.8.8.8`,
+		// `i[nter]face` `<int>`
+		`iface 8`,
+		`src interface 2`,
+		`iface name 'gi'`,
+		`iface desc 'king'`,
 		`iface speed <0`,
-		`iface desc "nooooope"`,
-		`bytes <42`,
-		`packets > 4242`,
+		`src iface speed 10-10`,
+		// `port` `<range>`
+		`port 1`,
+		`port 1-100`,
+		`port 1-1023`,
+		`src port 1-10000`,
+		`dst port 0-1023`,
+		`src port 1`,
+		`dst port 1023`,
+		`port <0`,
+		// `asn` `<range>`
+		`asn 554`,
+		`asn >65000`,
+		`src asn 551`,
+		// `netsize` `<range>`
+		`netsize >24`,
+		// `vrf` `<range>`
+		`vrf 0`,
+		`dst vrf <1`,
+		// `router` `<address>`
+		`router 10.0.0.2`,
+		// `nexthop` `<address>`
+		`nexthop 10.11.0.2`,
+		// `bytes` `<range>`
+		`bytes 2049`,
+		`bytes <1000`,
+		// `packets` `<range>`
+		`packets 1110-1400`,
+		`packets >1000`,
+		// `country` `<cc>`
+		`country Es`,
+		// `direction` `incoming|outgoing`
+		`direction outgoing`,
+		`outgoing and country de`,
+		// `normalized`
+		`normalized`,
+		// `duration` `<range>`
+		`duration <100 and not status dropped`,
+		`duration 251`,
+		// `etype` `<int>|etype
+		`etype 0x0801`,
+		`etype 2042`,
+		`etype ipv6`,
+		// `proto` `<int>|proto
+		`proto 2`,
+		`proto tcp`,
+		`not proto 1`,
+		// `status` `<int>|status
+		`status acldeny`,
+		// `tcpflags` `<int>|tcpflag
+		`tcpflags ack`,
+		// `dsfield|iptos` <int>|dsstring
+		// `samplingrate` `<range>`
+		`samplingrate 31`,
+		`samplingrate >512`,
+		// `cid` `<range>`
+		`cid 1234`,
+		`not cid 123`,
+		// `icmp type` `<int>`
+		`icmp type 2`,
+		// `icmp code` `<int>`
+		`icmp code 1`,
+		// `bps` `<range>`
+		`bps 655681`,
+		`bps <100`,
+		// `pps` `<range>`
+		`pps <0`,
 	}
 
 	for _, test := range tests {
