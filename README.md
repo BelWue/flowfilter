@@ -111,7 +111,9 @@ Matches use different literals in different constellations, and some matches acc
 |             `proto` | `<int>\|<proto>`     | `tcp`, `6` (TCP)                                               |
 |            `status` | `<int>\|<status>`    | `dropped` (any drop), `0b10000000` (dropped unknown only)      | Literal Intergers match exactly, magic strings match as a bit mask.
 |          `tcpflags` | `<int>\|<tcpflags>`  | `ack` (ack in >0 packets), `0b010000` (just ack-only packets)  | Literal Intergers match exactly, magic strings match as a bit mask.
-|    `dsfield\|iptos` | `<int>\|<tcpflags>`  | `ce` (congestion exp. in >0 packets), `0b11` (CE packets only) | Literal Intergers match exactly, magic strings match as a bit mask.
+|             `iptos` | `<range>`            |                                                                |
+|              `dscp` | `<int>\|<dscp>`      | `default` (no class, i.e. 0), `0b0` (same)                     | All matches are exact, against `IPTos>>2`.
+|               `ecn` | `<int>\|<ecn>`       | `ce` (congestion exp. in >0 packets), `0b11` (CE packets only) | All matches are exact, against `IPTos&0b11`.
 |      `samplingrate` | `<range>`            | `<512` (only consider good sampling rate flows)                |
 |               `cid` | `<range>`            | `<20000` (only university networks)                            | Customer ID is an enriched field, matches only if applicable.
 |         `icmp type` | `<int>`              | `3` (destination unreachable)                                  | Also ensures `proto icmp`. Calculation based on destination port (Netflow v9).
