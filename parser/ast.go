@@ -99,7 +99,9 @@ type RegularMatchGroup struct {
 	Proto         *ProtoMatch             `| "proto" @@`
 	Status        *StatusMatch            `| "status" @@`
 	TcpFlag       *TcpFlagMatch           `| "tcpflags" @@`
-	IPTos         *IPTosMatch             `| ("iptos"|"dsfield") @@`
+	IPTos         *IPTosRangeMatch        `| "iptos" @@`
+	Dscp          *DscpMatch              `| "dscp" @@`
+	Ecn           *EcnMatch               `| "ecn" @@`
 	SamplingRate  *SamplingRateRangeMatch `| "samplingrate" @@`
 	Cid           *CidRangeMatch          `| "cid" @@`
 	Icmp          *IcmpMatch              `| "icmp" @@`
@@ -110,8 +112,8 @@ type RegularMatchGroup struct {
 func (o RegularMatchGroup) children() []Node {
 	return []Node{o.Router, o.NextHop, o.Bytes, o.Packets, o.RemoteCountry,
 		o.FlowDirection, o.Normalized, o.Duration, o.Etype, o.Proto,
-		o.Status, o.TcpFlag, o.IPTos, o.SamplingRate, o.Cid, o.Icmp,
-		o.Bps, o.Pps}
+		o.Status, o.TcpFlag, o.IPTos, o.Dscp, o.Ecn, o.SamplingRate,
+		o.Cid, o.Icmp, o.Bps, o.Pps}
 }
 
 type RouterMatch struct {
@@ -298,18 +300,41 @@ func (o *TcpFlagKey) Capture(values []string) error {
 	return nil
 }
 
-type IPTosMatch struct {
+type IPTosRangeMatch struct{ NumericRange }
+
+type DscpMatch struct {
 	BranchNode
-	IPTos    *Number   `  @Number`
-	IPTosKey *IPTosKey `| @IPTosMagic`
+	Dscp    *Number  `  @Number` // first 6 bits of iptos
+	DscpKey *DscpKey `| @DscpMagic`
 }
 
-func (o IPTosMatch) children() []Node { return nil }
+func (o DscpMatch) children() []Node { return nil }
 
-type IPTosKey Number
+type DscpKey Number
 
-func (o *IPTosKey) Capture(values []string) error {
-	// these are assumed as masks
+func (o *DscpKey) Capture(values []string) error {
+	// these are assumed as explicit
+	switch values[0] {
+	case "default":
+		*o = 0b000000
+	case "besteffort":
+		*o = 0b000000
+	}
+	return nil
+}
+
+type EcnMatch struct {
+	BranchNode
+	Ecn    *Number `  @Number` // last 2 bits of iptos
+	EcnKey *EcnKey `| @EcnMagic`
+}
+
+func (o EcnMatch) children() []Node { return nil }
+
+type EcnKey Number
+
+func (o *EcnKey) Capture(values []string) error {
+	// these are assumed as explicit
 	switch values[0] {
 	case "ce":
 		*o = 0b11

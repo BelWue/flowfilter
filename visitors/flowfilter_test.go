@@ -46,7 +46,7 @@ var (
 		Proto:            1,          // uint32
 		ForwardingStatus: 0b01000010, // uint32
 		TCPFlags:         0b010010,   // uint32
-		IPTos:            4,          // uint32
+		IPTos:            0b00000011, // uint32
 		SamplingRate:     32,         // uint64
 		Cid:              123,        // uint32
 
@@ -154,6 +154,10 @@ func TestAccept(t *testing.T) {
 		// `duration` `<range>`
 		`duration >100 and not status dropped`,
 		`duration 250`,
+		// `dscp` `<int>|dscp
+		`dscp default`,
+		// `ecn` `<int>|ecn
+		`ecn ce`,
 		// `etype` `<int>|etype
 		`etype 0x0800`,
 		`etype 2048`,
@@ -166,7 +170,8 @@ func TestAccept(t *testing.T) {
 		`status forwarded`,
 		// `tcpflags` `<int>|tcpflag
 		`not tcpflags ack`,
-		// `dsfield|iptos` <int>|dsstring
+		// `iptos` <range>
+		`iptos 0b0-0b11`,
 		// `samplingrate` `<range>`
 		`samplingrate 32`,
 		`samplingrate <512`,

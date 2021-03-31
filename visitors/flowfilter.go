@@ -56,16 +56,17 @@ func (f *Filter) Visit(n parser.Node, next func() error) error {
 	case *parser.BpsRangeMatch:
 	case *parser.ByteRangeMatch:
 	case *parser.CidRangeMatch:
-	case *parser.RegularMatchGroup:
 	case *parser.DirectionalMatchGroup:
 	case *parser.DurationRangeMatch:
+	case *parser.DscpMatch:
+	case *parser.EcnMatch:
 	case *parser.EtypeMatch:
 	case *parser.Expression:
 	case *parser.FlowDirectionMatch:
 	case *parser.IcmpMatch:
 	case *parser.IfSpeedRangeMatch:
 	case *parser.InterfaceMatch:
-	case *parser.IPTosMatch:
+	case *parser.IPTosRangeMatch:
 	case *parser.NetsizeRangeMatch:
 	case *parser.NextHopMatch:
 	case *parser.NormalizedMatch:
@@ -75,6 +76,7 @@ func (f *Filter) Visit(n parser.Node, next func() error) error {
 	case *parser.PpsRangeMatch:
 	case *parser.ProtoMatch:
 	case *parser.RangeEnd:
+	case *parser.RegularMatchGroup:
 	case *parser.RemoteCountryMatch:
 	case *parser.RouterMatch:
 	case *parser.SamplingRateRangeMatch:
@@ -168,6 +170,10 @@ func (f *Filter) Visit(n parser.Node, next func() error) error {
 			(*node).EvalResult = node.TcpFlag.EvalResult
 		case node.IPTos != nil:
 			(*node).EvalResult = node.IPTos.EvalResult
+		case node.Dscp != nil:
+			(*node).EvalResult = node.Dscp.EvalResult
+		case node.Ecn != nil:
+			(*node).EvalResult = node.Ecn.EvalResult
 		case node.SamplingRate != nil:
 			(*node).EvalResult = node.SamplingRate.EvalResult
 		case node.Cid != nil:
@@ -232,6 +238,20 @@ func (f *Filter) Visit(n parser.Node, next func() error) error {
 			return fmt.Errorf("Bad duration range, lower %d > upper %d",
 				*node.Lower,
 				*node.Upper)
+		}
+	case *parser.DscpMatch:
+		switch {
+		case node.Dscp != nil:
+			(*node).EvalResult = f.flowmsg.IPTos>>2 == uint32(*node.Dscp)
+		case node.DscpKey != nil:
+			(*node).EvalResult = f.flowmsg.IPTos>>2 == uint32(*node.DscpKey)
+		}
+	case *parser.EcnMatch:
+		switch {
+		case node.Ecn != nil:
+			(*node).EvalResult = f.flowmsg.IPTos&0b00000011 == uint32(*node.Ecn)
+		case node.EcnKey != nil:
+			(*node).EvalResult = f.flowmsg.IPTos&0b00000011 == uint32(*node.EcnKey)
 		}
 	case *parser.EtypeMatch:
 		switch {
@@ -303,12 +323,12 @@ func (f *Filter) Visit(n parser.Node, next func() error) error {
 			(*node).EvalResultSrc = node.Speed.EvalResultSrc
 			(*node).EvalResultDst = node.Speed.EvalResultDst
 		}
-	case *parser.IPTosMatch:
-		switch {
-		case node.IPTos != nil:
-			(*node).EvalResult = f.flowmsg.IPTos == uint32(*node.IPTos)
-		case node.IPTosKey != nil:
-			(*node).EvalResult = f.flowmsg.IPTos&uint32(*node.IPTosKey) == uint32(*node.IPTosKey)
+	case *parser.IPTosRangeMatch:
+		(*node).EvalResult, err = processNumericRange(node.NumericRange, uint64(f.flowmsg.IPTos))
+		if err != nil {
+			return fmt.Errorf("Bad iptos range, lower %d > upper %d",
+				*node.Lower,
+				*node.Upper)
 		}
 	case *parser.NetsizeRangeMatch:
 		(*node).EvalResultSrc, _ = processNumericRange(node.NumericRange, uint64(f.flowmsg.SrcNet))
