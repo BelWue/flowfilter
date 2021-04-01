@@ -32,6 +32,14 @@ func (p *Printer) String(expr *parser.Expression) string {
 	return strings.Join(p.output, " ")
 }
 
+func reverseMap(m map[string]uint64) map[uint64]string {
+	n := make(map[uint64]string)
+	for k, v := range m {
+		n[v] = k
+	}
+	return n
+}
+
 func (p *Printer) Visit(n parser.Node, next func() error) error {
 	// Before processing a node's children, do different things for
 	// different types of nodes.
@@ -72,12 +80,7 @@ func (p *Printer) Visit(n parser.Node, next func() error) error {
 	case *parser.DurationRangeMatch:
 		p.output = append(p.output, "duration")
 	case *parser.DscpKey:
-		var magic string
-		switch *node {
-		case 0b000000:
-			magic = "default"
-		}
-		if magic != "" {
+		if magic, ok := reverseMap(parser.DscpMagicMap)[uint64(*node)]; ok {
 			p.output = append(p.output, magic)
 		} else {
 			p.output = append(p.output, fmt.Sprintf("%d", *node))
@@ -85,16 +88,7 @@ func (p *Printer) Visit(n parser.Node, next func() error) error {
 	case *parser.DscpMatch:
 		p.output = append(p.output, "dscp")
 	case *parser.EcnKey:
-		var magic string
-		switch *node {
-		case 0b11:
-			magic = "ce"
-		case 0b01:
-			magic = "ect1"
-		case 0b10:
-			magic = "ect0"
-		}
-		if magic != "" {
+		if magic, ok := reverseMap(parser.EcnMagicMap)[uint64(*node)]; ok {
 			p.output = append(p.output, magic)
 		} else {
 			p.output = append(p.output, fmt.Sprintf("%d", *node))
@@ -102,16 +96,7 @@ func (p *Printer) Visit(n parser.Node, next func() error) error {
 	case *parser.EcnMatch:
 		p.output = append(p.output, "ecn")
 	case *parser.EtypeKey:
-		var magic string
-		switch *node {
-		case 0x0800:
-			magic = "ipv4"
-		case 0x0806:
-			magic = "arp"
-		case 0x86DD:
-			magic = "ipv6"
-		}
-		if magic != "" {
+		if magic, ok := reverseMap(parser.EtypeMagicMap)[uint64(*node)]; ok {
 			p.output = append(p.output, magic)
 		} else {
 			p.output = append(p.output, fmt.Sprintf("%d", *node))
@@ -144,22 +129,7 @@ func (p *Printer) Visit(n parser.Node, next func() error) error {
 	case *parser.PpsRangeMatch:
 		p.output = append(p.output, "pps")
 	case *parser.ProtoKey:
-		var magic string
-		switch *node {
-		case 1:
-			magic = "icmp"
-		case 6:
-			magic = "tcp"
-		case 17:
-			magic = "udp"
-		case 58:
-			magic = "icmpv6"
-		case 94:
-			magic = "ipip"
-		case 112:
-			magic = "vrrp"
-		}
-		if magic != "" {
+		if magic, ok := reverseMap(parser.ProtoMagicMap)[uint64(*node)]; ok {
 			p.output = append(p.output, magic)
 		} else {
 			p.output = append(p.output, fmt.Sprintf("%d", *node))
@@ -181,24 +151,7 @@ func (p *Printer) Visit(n parser.Node, next func() error) error {
 			p.output = append(p.output, "(")
 		} // else children will handle themselves
 	case *parser.StatusKey:
-		var magic string
-		switch *node {
-		case 0b01000000:
-			magic = "forwarded"
-		case 0b10000000:
-			magic = "dropped"
-		case 0b10000001:
-			magic = "acldeny"
-		case 0b10000010:
-			magic = "acldrop"
-		case 0b10000011:
-			magic = "unroutable"
-		case 0b11000000:
-			magic = "consumed"
-		case 0b10001010:
-			magic = "policerdrop"
-		}
-		if magic != "" {
+		if magic, ok := reverseMap(parser.StatusMagicMap)[uint64(*node)]; ok {
 			p.output = append(p.output, magic)
 		} else {
 			p.output = append(p.output, fmt.Sprintf("%d", *node))
@@ -207,36 +160,13 @@ func (p *Printer) Visit(n parser.Node, next func() error) error {
 		p.output = append(p.output, "status")
 	case *parser.String:
 		p.output = append(p.output, string(*node))
-	case *parser.TcpFlagKey:
-		var magic string
-		switch *node {
-		case 0b000000001:
-			magic = "fin"
-		case 0b000010001:
-			magic = "finack"
-		case 0b000000010:
-			magic = "syn"
-		case 0b000000100:
-			magic = "rst"
-		case 0b000001000:
-			magic = "psh"
-		case 0b000010000:
-			magic = "ack"
-		case 0b000100000:
-			magic = "urg"
-		case 0b000010010:
-			magic = "synack"
-		case 0b010000000:
-			magic = "cwr"
-		case 0b100000000:
-			magic = "ece"
-		}
-		if magic != "" {
+	case *parser.TcpFlagsKey:
+		if magic, ok := reverseMap(parser.TcpFlagsMagicMap)[uint64(*node)]; ok {
 			p.output = append(p.output, magic)
 		} else {
 			p.output = append(p.output, fmt.Sprintf("%d", *node))
 		}
-	case *parser.TcpFlagMatch:
+	case *parser.TcpFlagsMatch:
 		p.output = append(p.output, "tcpflags")
 	case *parser.VrfRangeMatch:
 		p.output = append(p.output, "vrf")

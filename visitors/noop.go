@@ -51,8 +51,8 @@ func (noop *Noop) Visit(n parser.Node, next func() error) error {
 	case *parser.StatusKey:
 	case *parser.StatusMatch:
 	case *parser.String:
-	case *parser.TcpFlagKey:
-	case *parser.TcpFlagMatch:
+	case *parser.TcpFlagsKey:
+	case *parser.TcpFlagsMatch:
 	case *parser.VrfRangeMatch:
 	default:
 		return fmt.Errorf("Encountered unknown node type: %T", node)
@@ -104,8 +104,8 @@ func (noop *Noop) Visit(n parser.Node, next func() error) error {
 	case *parser.StatusKey:
 	case *parser.StatusMatch:
 	case *parser.String:
-	case *parser.TcpFlagKey:
-	case *parser.TcpFlagMatch:
+	case *parser.TcpFlagsKey:
+	case *parser.TcpFlagsMatch:
 	case *parser.VrfRangeMatch:
 	default:
 		_ = node
