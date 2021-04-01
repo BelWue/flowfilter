@@ -58,8 +58,11 @@ func (f *Filter) Visit(n parser.Node, next func() error) error {
 	case *parser.CidRangeMatch:
 	case *parser.DirectionalMatchGroup:
 	case *parser.DurationRangeMatch:
+	case *parser.DscpKey:
 	case *parser.DscpMatch:
+	case *parser.EcnKey:
 	case *parser.EcnMatch:
+	case *parser.EtypeKey:
 	case *parser.EtypeMatch:
 	case *parser.Expression:
 	case *parser.FlowDirectionMatch:
@@ -74,6 +77,7 @@ func (f *Filter) Visit(n parser.Node, next func() error) error {
 	case *parser.PacketRangeMatch:
 	case *parser.PortRangeMatch:
 	case *parser.PpsRangeMatch:
+	case *parser.ProtoKey:
 	case *parser.ProtoMatch:
 	case *parser.RangeEnd:
 	case *parser.RegularMatchGroup:
@@ -81,8 +85,10 @@ func (f *Filter) Visit(n parser.Node, next func() error) error {
 	case *parser.RouterMatch:
 	case *parser.SamplingRateRangeMatch:
 	case *parser.Statement:
+	case *parser.StatusKey:
 	case *parser.StatusMatch:
 	case *parser.String:
+	case *parser.TcpFlagKey:
 	case *parser.TcpFlagMatch:
 	case *parser.VrfRangeMatch:
 	default:

@@ -163,12 +163,19 @@ type EtypeMatch struct {
 	EtypeKey *EtypeKey `| @EtypeMagic`
 }
 
-func (o EtypeMatch) children() []Node { return nil }
+func (o EtypeMatch) children() []Node {
+	return []Node{o.Etype, o.EtypeKey}
+}
 
 type EtypeKey Number
 
+func (o EtypeKey) children() []Node { return nil }
+
 func (o *EtypeKey) Capture(values []string) error {
 	switch values[0] {
+	// IMPORTANT: if you add one, also add it to:
+	//	* the appropriate Magic token in parser/parser.go
+	//	* in visitors/printer.go so it's printed nicely too
 	case "ipv4":
 		*o = 0x0800
 	case "arp":
@@ -185,12 +192,19 @@ type ProtoMatch struct {
 	ProtoKey *ProtoKey `| @ProtoMagic`
 }
 
-func (o ProtoMatch) children() []Node { return nil }
+func (o ProtoMatch) children() []Node {
+	return []Node{o.Proto, o.ProtoKey}
+}
 
 type ProtoKey Number
 
+func (o ProtoKey) children() []Node { return nil }
+
 func (o *ProtoKey) Capture(values []string) error {
 	switch values[0] {
+	// IMPORTANT: if you add one, also add it to:
+	//	* the appropriate Magic token in parser/parser.go
+	//	* in visitors/printer.go so it's printed nicely too
 	case "icmp":
 		*o = 1
 	case "tcp":
@@ -213,13 +227,20 @@ type StatusMatch struct {
 	StatusKey *StatusKey `| @StatusMagic`
 }
 
-func (o StatusMatch) children() []Node { return nil }
+func (o StatusMatch) children() []Node {
+	return []Node{o.Status, o.StatusKey}
+}
 
 type StatusKey Number
+
+func (o StatusKey) children() []Node { return nil }
 
 func (o *StatusKey) Capture(values []string) error {
 	// these are assumed as masks
 	switch values[0] {
+	// IMPORTANT: if you add one, also add it to:
+	//	* the appropriate Magic token in parser/parser.go
+	//	* in visitors/printer.go so it's printed nicely too
 	case "forwarded":
 		*o = 0b01000000
 	case "dropped":
@@ -269,13 +290,20 @@ type TcpFlagMatch struct {
 	TcpFlagKey *TcpFlagKey `| @TcpFlagMagic`
 }
 
-func (o TcpFlagMatch) children() []Node { return nil }
+func (o TcpFlagMatch) children() []Node {
+	return []Node{o.TcpFlag, o.TcpFlagKey}
+}
 
 type TcpFlagKey Number
+
+func (o TcpFlagKey) children() []Node { return nil }
 
 func (o *TcpFlagKey) Capture(values []string) error {
 	// these are assumed as masks
 	switch values[0] {
+	// IMPORTANT: if you add one, also add it to:
+	//	* the appropriate Magic token in parser/parser.go
+	//	* in visitors/printer.go so it's printed nicely too
 	case "fin":
 		*o = 0b000000001
 	case "finack":
@@ -308,13 +336,20 @@ type DscpMatch struct {
 	DscpKey *DscpKey `| @DscpMagic`
 }
 
-func (o DscpMatch) children() []Node { return nil }
+func (o DscpMatch) children() []Node {
+	return []Node{o.Dscp, o.DscpKey}
+}
 
 type DscpKey Number
+
+func (o DscpKey) children() []Node { return nil }
 
 func (o *DscpKey) Capture(values []string) error {
 	// these are assumed as explicit
 	switch values[0] {
+	// IMPORTANT: if you add one, also add it to:
+	//	* the appropriate Magic token in parser/parser.go
+	//	* in visitors/printer.go so it's printed nicely too
 	case "default":
 		*o = 0b000000
 	case "besteffort":
@@ -329,13 +364,20 @@ type EcnMatch struct {
 	EcnKey *EcnKey `| @EcnMagic`
 }
 
-func (o EcnMatch) children() []Node { return nil }
+func (o EcnMatch) children() []Node {
+	return []Node{o.Ecn, o.EcnKey}
+}
 
 type EcnKey Number
+
+func (o EcnKey) children() []Node { return nil }
 
 func (o *EcnKey) Capture(values []string) error {
 	// these are assumed as explicit
 	switch values[0] {
+	// IMPORTANT: if you add one, also add it to: so it's printed nicely too
+	//	* the appropriate Magic token in parser/parser.go
+	//	* in visitors/printer.go so it's printed nicely too
 	case "ce":
 		*o = 0b11
 	case "ect1":
