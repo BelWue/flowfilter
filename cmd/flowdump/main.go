@@ -65,6 +65,7 @@ func format_flow(flowmsg *flow.FlowMessage) string {
 	timestamp := time.Unix(int64(flowmsg.TimeFlowEnd), 0).Format("15:04:05")
 	src := net.IP(flowmsg.SrcAddr)
 	dst := net.IP(flowmsg.DstAddr)
+	router := net.IP(flowmsg.SamplerAddress)
 	protomap := map[uint32]string{1: "ICMP", 6: "TCP", 17: "UDP"}
 	proto := protomap[flowmsg.Proto]
 	if proto == "" {
@@ -74,7 +75,9 @@ func format_flow(flowmsg *flow.FlowMessage) string {
 	if duration == 0 {
 		duration += 1
 	}
-	return fmt.Sprintf("%s: %s:%d -> %s:%d, %s, %ds, %s, %s",
-		timestamp, src, flowmsg.SrcPort, dst, flowmsg.DstPort, proto,
-		duration, humanize.SI(float64(flowmsg.Bytes*8/duration), "bps"), humanize.SI(float64(flowmsg.Packets/duration), "pps"))
+	return fmt.Sprintf("%s: %s:%d -> %s:%d [%s -> %s, @%s], %s, %ds, %s, %s",
+		timestamp, src, flowmsg.SrcPort, dst, flowmsg.DstPort,
+		flowmsg.SrcIfDesc, flowmsg.DstIfDesc, router, proto,
+		duration, humanize.SI(float64(flowmsg.Bytes*8/duration),
+			"bps"), humanize.SI(float64(flowmsg.Packets/duration), "pps"))
 }
