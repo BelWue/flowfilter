@@ -69,7 +69,7 @@ func format_flow(flowmsg *flow.FlowMessage) string {
 	protomap := map[uint32]string{1: "ICMP", 6: "TCP", 17: "UDP"}
 	proto := protomap[flowmsg.Proto]
 	if proto == "" {
-		proto = "OTHER"
+		proto = fmt.Sprintf("%d", flowmsg.Proto)
 	}
 	duration := flowmsg.TimeFlowEnd - flowmsg.TimeFlowStart
 	if duration == 0 {
