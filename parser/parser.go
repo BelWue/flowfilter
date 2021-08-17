@@ -2,11 +2,11 @@ package parser
 
 import (
 	"github.com/alecthomas/participle/v2"
-	"github.com/alecthomas/participle/v2/lexer/stateful"
+	"github.com/alecthomas/participle/v2/lexer"
 )
 
 var (
-	bpfLexer = stateful.MustSimple([]stateful.Rule{
+	bpfLexer = lexer.MustSimple([]lexer.Rule{
 		// syntax connectors and negators
 		{Name: "Negation", Pattern: `\bnot\b`, Action: nil},
 		{Name: "Conjunction", Pattern: `\b(and|or)\b`, Action: nil},
