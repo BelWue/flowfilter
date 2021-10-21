@@ -103,7 +103,6 @@ type RegularMatchGroup struct {
 	Dscp          *DscpMatch              `| "dscp" @@`
 	Ecn           *EcnMatch               `| "ecn" @@`
 	SamplingRate  *SamplingRateRangeMatch `| "samplingrate" @@`
-	Cid           *CidRangeMatch          `| "cid" @@`
 	Icmp          *IcmpMatch              `| "icmp" @@`
 	Bps           *BpsRangeMatch          `| "bps" @@`
 	Pps           *PpsRangeMatch          `| "pps" @@`
@@ -113,7 +112,7 @@ func (o RegularMatchGroup) children() []Node {
 	return []Node{o.Router, o.NextHop, o.Bytes, o.Packets, o.RemoteCountry,
 		o.FlowDirection, o.Normalized, o.Duration, o.Etype, o.Proto,
 		o.Status, o.TcpFlags, o.IPTos, o.Dscp, o.Ecn, o.SamplingRate,
-		o.Cid, o.Icmp, o.Bps, o.Pps}
+		o.Icmp, o.Bps, o.Pps}
 }
 
 type RouterMatch struct {
@@ -303,12 +302,13 @@ type DirectionalMatchGroup struct {
 	Port      *PortRangeMatch    `| "port" @@`
 	Asn       *AsnRangeMatch     `| "asn" @@`
 	Netsize   *NetsizeRangeMatch `| "netsize" @@`
+	Cid       *CidRangeMatch     `| "cid" @@`
 	Vrf       *VrfRangeMatch     `| "vrf" @@ )`
 }
 
 func (o DirectionalMatchGroup) children() []Node {
 	return []Node{o.Direction, o.Address, o.Interface, o.Port, o.Asn,
-		o.Netsize, o.Vrf}
+		o.Netsize, o.Cid, o.Vrf}
 }
 
 type AddressMatch struct {
