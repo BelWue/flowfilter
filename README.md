@@ -65,18 +65,18 @@ is equivalent to the expression `src match foo or dst match bar`.
 
 Matches use different literals in different constellations, and some matches accept further keywords/magic strings.
 
-| Literal   | Syntax                                                                               |
-| ---------:| ------------------------------------------------------------------------------------ |
-| `address` | IP address, as accepted by `net.IP`.
-|  `string` | Anything wrapped in either `"` or `'`.
-|     `int` | Unsigned Integer. In addition to decimal, `0x` and `0b` prefixes are allowed.
-|   `range` | `[<\|>]<int>\|<int>-<int>`, i.e. `4`, `4-10`, `<4` or `>4` are acceptable.
-|      `cc` | Any ISO3166 country code, no quotes.
-|   `etype` | `ipv6`, `ipv4`, `arp`
-|   `proto` | `icmp`, `tcp`, `udp`, `icmpv6`, `ipip`, `vrrp`
-|      `ds` | `ce`, `ect0`, `ect1`
-|  `status` | `forwarded`, `dropped`, `acldeny`, `acldrop`, `policerdrop`, `unroutable`, `consumed`
-| `tcpflag` | `fin`, `syn`, `rst`, `psh`, `ack`, `urg`, `synack`, `cwr`, `ece`
+|  Literal   | Syntax                                                                               |
+| ----------:| ------------------------------------------------------------------------------------ |
+|  `address` | IP address, as accepted by `net.IP`.
+|   `string` | Anything wrapped in either `"` or `'`.
+|      `int` | Unsigned Integer. In addition to decimal, `0x` and `0b` prefixes are allowed.
+|    `range` | `[<\|>]<int>\|<int>-<int>`, i.e. `4`, `4-10`, `<4` or `>4` are acceptable.
+|       `cc` | Any ISO3166 country code, no quotes.
+|    `etype` | `ipv6`, `ipv4`, `arp`
+|    `proto` | `icmp`, `tcp`, `udp`, `icmpv6`, `ipip`, `vrrp`
+|       `ds` | `ce`, `ect0`, `ect1`
+|   `status` | `forwarded`, `dropped`, `acldeny`, `acldrop`, `policerdrop`, `unroutable`, `consumed`
+| `tcpflags` | `fin`, `syn`, `rst`, `psh`, `ack`, `urg`, `synack`, `cwr`, `ece`
 
 #### Directional Matches
 
@@ -91,6 +91,7 @@ Matches use different literals in different constellations, and some matches acc
 |              `port` | `<range>`           | `<1000` (privileged), `22` (ssh), `9100-9999` (prometheus exporter) |
 |               `asn` | `<range>`           | `553` (ourselves), `64512-65534` (private asn)                      |
 |           `netsize` | `<range>`           | `<24` (BGP filtered)                                                |
+|               `cid` | `<range>`           | `<20000` (only university networks)                                 | Customer ID is an enriched field, matches only if applicable.
 |               `vrf` | `<range>`           |                                                                     |
 
 #### Regular Matches
@@ -115,7 +116,6 @@ Matches use different literals in different constellations, and some matches acc
 |              `dscp` | `<int>\|<dscp>`      | `default` (no class, i.e. 0), `0b0` (same)                     | All matches are exact, against `IPTos>>2`.
 |               `ecn` | `<int>\|<ecn>`       | `ce` (congestion exp. in >0 packets), `0b11` (CE packets only) | All matches are exact, against `IPTos&0b11`.
 |      `samplingrate` | `<range>`            | `<512` (only consider good sampling rate flows)                |
-|               `cid` | `<range>`            | `<20000` (only university networks)                            | Customer ID is an enriched field, matches only if applicable.
 |         `icmp type` | `<int>`              | `3` (destination unreachable)                                  | Also ensures `proto icmp`. Calculation based on destination port (Netflow v9).
 |         `icmp code` | `<int>`              | `icmp type 3 and icmp code 3` (port unreachable)               | Also ensures `proto icmp`. Calculation based on destination port (Netflow v9).
 |               `bps` | `<range>`            | `>1048576` (>1Mbps), `>1073741824` (>1Gbps)                    | Calculated as average based on byte count and flow duration.
