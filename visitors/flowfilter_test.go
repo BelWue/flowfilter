@@ -49,6 +49,8 @@ var (
 		IPTos:            0b00000011, // uint32
 		SamplingRate:     32,         // uint64
 		Cid:              123,        // uint32
+		SrcCid:           10,         // uint32
+		DstCid:           123,        // uint32
 
 		// TODO: set but kinda useless for a filter language?
 		// Type:		// int32 // 0, sFlow 1, NFv5 2, NFv9 3, IPFIX 4
@@ -177,6 +179,7 @@ func TestAccept(t *testing.T) {
 		`samplingrate <512`,
 		// `cid` `<range>`
 		`cid 123`,
+		`src cid 1-100`,
 		`not cid 1283`,
 		// `icmp type` `<int>`
 		`icmp type 4`,
@@ -278,6 +281,7 @@ func TestReject(t *testing.T) {
 		// `cid` `<range>`
 		`cid 1234`,
 		`not cid 123`,
+		`not dst cid 123`,
 		// `icmp type` `<int>`
 		`icmp type 2`,
 		// `icmp code` `<int>`

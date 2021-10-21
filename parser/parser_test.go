@@ -58,6 +58,9 @@ func TestAccept(t *testing.T) {
 		`etype 0x800`,
 		// composite
 		`(proto 6 and port 456) or src iface 0 and address 1.1.1.1`,
+		// cid
+		`cid 1`,
+		`src cid 1-2`,
 	}
 
 	for _, test := range tests {

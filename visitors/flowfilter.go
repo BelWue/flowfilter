@@ -2,10 +2,11 @@ package visitors
 
 import (
 	"fmt"
-	"github.com/bwNetFlow/flowfilter/parser"
-	flow "github.com/bwNetFlow/protobuf/go"
 	"net"
 	"strings"
+
+	"github.com/bwNetFlow/flowfilter/parser"
+	flow "github.com/bwNetFlow/protobuf/go"
 )
 
 type Filter struct {
@@ -142,7 +143,9 @@ func (f *Filter) Visit(n parser.Node, next func() error) error {
 				*node.Upper)
 		}
 	case *parser.CidRangeMatch:
-		(*node).EvalResult, err = processNumericRange(node.NumericRange, uint64(f.flowmsg.Cid))
+		(*node).EvalResult, _ = processNumericRange(node.NumericRange, uint64(f.flowmsg.Cid))
+		(*node).EvalResultSrc, _ = processNumericRange(node.NumericRange, uint64(f.flowmsg.SrcCid))
+		(*node).EvalResultDst, err = processNumericRange(node.NumericRange, uint64(f.flowmsg.DstCid))
 		if err != nil {
 			return fmt.Errorf("Bad cid range, lower %d > upper %d",
 				*node.Lower,
@@ -182,8 +185,6 @@ func (f *Filter) Visit(n parser.Node, next func() error) error {
 			(*node).EvalResult = node.Ecn.EvalResult
 		case node.SamplingRate != nil:
 			(*node).EvalResult = node.SamplingRate.EvalResult
-		case node.Cid != nil:
-			(*node).EvalResult = node.Cid.EvalResult
 		case node.Icmp != nil:
 			(*node).EvalResult = node.Icmp.EvalResult
 		case node.Bps != nil:
@@ -204,6 +205,8 @@ func (f *Filter) Visit(n parser.Node, next func() error) error {
 				(*node).EvalResult = node.Asn.EvalResultSrc || node.Asn.EvalResultDst
 			case node.Netsize != nil:
 				(*node).EvalResult = node.Netsize.EvalResultSrc || node.Netsize.EvalResultDst
+			case node.Cid != nil:
+				(*node).EvalResult = node.Cid.EvalResult || node.Cid.EvalResultSrc || node.Cid.EvalResultDst
 			case node.Vrf != nil:
 				(*node).EvalResult = node.Vrf.EvalResultSrc || node.Vrf.EvalResultDst
 			}
@@ -219,6 +222,8 @@ func (f *Filter) Visit(n parser.Node, next func() error) error {
 				(*node).EvalResult = node.Asn.EvalResultSrc
 			case node.Netsize != nil:
 				(*node).EvalResult = node.Netsize.EvalResultSrc
+			case node.Cid != nil:
+				(*node).EvalResult = node.Cid.EvalResultSrc
 			case node.Vrf != nil:
 				(*node).EvalResult = node.Vrf.EvalResultSrc
 			}
@@ -234,6 +239,8 @@ func (f *Filter) Visit(n parser.Node, next func() error) error {
 				(*node).EvalResult = node.Asn.EvalResultDst
 			case node.Netsize != nil:
 				(*node).EvalResult = node.Netsize.EvalResultDst
+			case node.Cid != nil:
+				(*node).EvalResult = node.Cid.EvalResultDst
 			case node.Vrf != nil:
 				(*node).EvalResult = node.Vrf.EvalResultDst
 			}
