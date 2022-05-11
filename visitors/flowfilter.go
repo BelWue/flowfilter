@@ -78,6 +78,7 @@ func (f *Filter) Visit(n parser.Node, next func() error) error {
 	case *parser.PacketRangeMatch:
 	case *parser.PortRangeMatch:
 	case *parser.PpsRangeMatch:
+	case *parser.ViaAsnRangeMatch:
 	case *parser.ProtoKey:
 	case *parser.ProtoMatch:
 	case *parser.RangeEnd:
@@ -191,6 +192,8 @@ func (f *Filter) Visit(n parser.Node, next func() error) error {
 			(*node).EvalResult = node.Bps.EvalResult
 		case node.Pps != nil:
 			(*node).EvalResult = node.Pps.EvalResult
+		case node.ViaAsn != nil:
+			(*node).EvalResult = node.ViaAsn.EvalResult
 		}
 	case *parser.DirectionalMatchGroup:
 		if node.Direction == nil {
@@ -377,6 +380,17 @@ func (f *Filter) Visit(n parser.Node, next func() error) error {
 		}
 		pps := f.flowmsg.Packets / duration
 		(*node).EvalResult, err = processNumericRange(node.NumericRange, pps)
+		if err != nil {
+			return fmt.Errorf("Bad range: %v.", err)
+		}
+	case *parser.ViaAsnRangeMatch:
+		for _, asn := range f.flowmsg.ASPath {
+			result, err := processNumericRange(node.NumericRange, uint64(asn))
+			if err != nil {
+				return fmt.Errorf("Bad range: %v.", err)
+			}
+			(*node).EvalResult = (*node).EvalResult || result
+		}
 	case *parser.ProtoMatch:
 		switch {
 		case node.Proto != nil:

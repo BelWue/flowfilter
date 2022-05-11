@@ -35,6 +35,7 @@ var (
 		// complex fields
 		SamplerAddress:   []byte{10, 0, 0, 1},
 		NextHop:          []byte{10, 11, 0, 1},
+		ASPath:           []uint32{10, 553, 42, 19284},
 		Bytes:            20490000,   // uint64
 		Packets:          400,        // uint64
 		FlowDirection:    0,          // uint32
@@ -190,6 +191,8 @@ func TestAccept(t *testing.T) {
 		`bps >100`,
 		// `pps` `<range>`
 		`pps >0`,
+		// `via` `<range>`
+		`via 553`,
 	}
 
 	for _, test := range tests {
@@ -291,6 +294,8 @@ func TestReject(t *testing.T) {
 		`bps <100`,
 		// `pps` `<range>`
 		`pps <0`,
+		// `via` `<range>`
+		`via 554`,
 	}
 
 	for _, test := range tests {

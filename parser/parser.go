@@ -19,7 +19,7 @@ var (
 		{Name: "TcpFlagsMagic", Pattern: `\b(fin|syn|rst|psh|ack|urg|synack|cwr|ece)\b`},
 		// actual match keywords
 		{Name: "Direction", Pattern: `\b(src|dst)\b`},
-		{Name: "Match", Pattern: `\b(bytes|packets|port|asn|interface|iface|address|router|country|direction|duration|etype|proto|status|tcpflags|iptos|dscp|ecn|nexthop|netsize|vrf|samplingrate|cid|icmp|bps|pps)\b`},
+		{Name: "Match", Pattern: `\b(bytes|packets|port|asn|via|interface|iface|address|router|country|direction|duration|etype|proto|status|tcpflags|iptos|dscp|ecn|nexthop|netsize|vrf|samplingrate|cid|icmp|bps|pps)\b`},
 		{Name: "Standalone", Pattern: `\b(incoming|outgoing|normalized)\b`},
 		// subcommands
 		{Name: "IfaceSubcommands", Pattern: `\b(name|desc|speed)\b`},
