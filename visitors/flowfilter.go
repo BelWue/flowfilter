@@ -6,11 +6,11 @@ import (
 	"strings"
 
 	"github.com/bwNetFlow/flowfilter/parser"
-	flow "github.com/bwNetFlow/protobuf/go"
+	"github.com/bwNetFlow/flowpipeline/pb"
 )
 
 type Filter struct {
-	flowmsg     *flow.FlowMessage
+	flowmsg     *pb.EnrichedFlow
 	__direction string // this is super hacky
 }
 
@@ -38,7 +38,7 @@ func processNumericRange(node parser.NumericRange, compare uint64) (bool, error)
 	return false, err
 }
 
-func (f *Filter) CheckFlow(expr *parser.Expression, flowmsg *flow.FlowMessage) (bool, error) {
+func (f *Filter) CheckFlow(expr *parser.Expression, flowmsg *pb.EnrichedFlow) (bool, error) {
 	f.flowmsg = flowmsg                // provide current flow to actual Visitor
 	err := parser.Visit(expr, f.Visit) // run the Visitor
 	return expr.EvalResult, err

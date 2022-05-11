@@ -10,8 +10,8 @@ import (
 
 	"github.com/bwNetFlow/flowfilter/parser"
 	"github.com/bwNetFlow/flowfilter/visitors"
-	"github.com/bwNetFlow/kafkaconnector"
-	flow "github.com/bwNetFlow/protobuf/go"
+	"github.com/bwNetFlow/flowpipeline/pb"
+	kafka "github.com/bwNetFlow/kafkaconnector"
 
 	"github.com/dustin/go-humanize"
 )
@@ -61,7 +61,7 @@ func main() {
 	}
 }
 
-func format_flow(flowmsg *flow.FlowMessage) string {
+func format_flow(flowmsg *pb.EnrichedFlow) string {
 	timestamp := time.Unix(int64(flowmsg.TimeFlowEnd), 0).Format("15:04:05")
 	src := net.IP(flowmsg.SrcAddr)
 	dst := net.IP(flowmsg.DstAddr)

@@ -6,12 +6,12 @@ import (
 	"testing"
 
 	"github.com/bwNetFlow/flowfilter/parser"
-	flow "github.com/bwNetFlow/protobuf/go"
+	"github.com/bwNetFlow/flowpipeline/pb"
 )
 
 var (
 	// TODO: The following FlowMessage declaration doubles as a progress tracker
-	flowmsg = &flow.FlowMessage{
+	flowmsg = &pb.EnrichedFlow{
 		// directional fields
 		SrcAddr:      []byte{10, 0, 0, 200},
 		DstAddr:      []byte{32, 1, 7, 192, 0, 0, 2, 84, 0, 0, 0, 0, 0, 0, 0, 6},
