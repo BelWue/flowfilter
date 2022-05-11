@@ -191,8 +191,8 @@ func TestAccept(t *testing.T) {
 		`bps >100`,
 		// `pps` `<range>`
 		`pps >0`,
-		// `via` `<range>`
-		`via 553`,
+		// `passes-through` `<range>`
+		`passes-through 553`,
 	}
 
 	for _, test := range tests {
@@ -294,8 +294,8 @@ func TestReject(t *testing.T) {
 		`bps <100`,
 		// `pps` `<range>`
 		`pps <0`,
-		// `via` `<range>`
-		`via 554`,
+		// `passes-through` `<range>`
+		`passes-through 554`,
 	}
 
 	for _, test := range tests {

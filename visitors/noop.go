@@ -41,7 +41,7 @@ func (noop *Noop) Visit(n parser.Node, next func() error) error {
 	case *parser.PacketRangeMatch:
 	case *parser.PortRangeMatch:
 	case *parser.PpsRangeMatch:
-	case *parser.ViaAsnRangeMatch:
+	case *parser.PassesThroughRangeMatch:
 	case *parser.ProtoKey:
 	case *parser.ProtoMatch:
 	case *parser.RangeEnd:
@@ -95,7 +95,7 @@ func (noop *Noop) Visit(n parser.Node, next func() error) error {
 	case *parser.PacketRangeMatch:
 	case *parser.PortRangeMatch:
 	case *parser.PpsRangeMatch:
-	case *parser.ViaAsnRangeMatch:
+	case *parser.PassesThroughRangeMatch:
 	case *parser.ProtoKey:
 	case *parser.ProtoMatch:
 	case *parser.RangeEnd:
