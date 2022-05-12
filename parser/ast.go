@@ -87,26 +87,26 @@ func (o NumericRange) children() []Node {
 // * several dedicated Match structs for different data types and sub commands
 type RegularMatchGroup struct {
 	BranchNode
-	Router        *RouterMatch             `"router" @@`
-	NextHop       *NextHopMatch            `| "nexthop" @@`
-	Bytes         *ByteRangeMatch          `| "bytes" @@`
-	Packets       *PacketRangeMatch        `| "packets" @@`
-	RemoteCountry *RemoteCountryMatch      `| "country" @@`
-	FlowDirection *FlowDirectionMatch      `| "direction"? @@`
-	Normalized    *NormalizedMatch         `| ""? @@`
-	Duration      *DurationRangeMatch      `| "duration" @@`
-	Etype         *EtypeMatch              `| "etype" @@`
-	Proto         *ProtoMatch              `| "proto" @@`
-	Status        *StatusMatch             `| "status" @@`
-	TcpFlags      *TcpFlagsMatch           `| "tcpflags" @@`
-	IPTos         *IPTosRangeMatch         `| "iptos" @@`
-	Dscp          *DscpMatch               `| "dscp" @@`
-	Ecn           *EcnMatch                `| "ecn" @@`
-	SamplingRate  *SamplingRateRangeMatch  `| "samplingrate" @@`
-	Icmp          *IcmpMatch               `| "icmp" @@`
-	Bps           *BpsRangeMatch           `| "bps" @@`
-	Pps           *PpsRangeMatch           `| "pps" @@`
-	PassesThrough *PassesThroughRangeMatch `| "passes-through" @@`
+	Router        *RouterMatch            `"router" @@`
+	NextHop       *NextHopMatch           `| "nexthop" @@`
+	Bytes         *ByteRangeMatch         `| "bytes" @@`
+	Packets       *PacketRangeMatch       `| "packets" @@`
+	RemoteCountry *RemoteCountryMatch     `| "country" @@`
+	FlowDirection *FlowDirectionMatch     `| "direction"? @@`
+	Normalized    *NormalizedMatch        `| ""? @@`
+	Duration      *DurationRangeMatch     `| "duration" @@`
+	Etype         *EtypeMatch             `| "etype" @@`
+	Proto         *ProtoMatch             `| "proto" @@`
+	Status        *StatusMatch            `| "status" @@`
+	TcpFlags      *TcpFlagsMatch          `| "tcpflags" @@`
+	IPTos         *IPTosRangeMatch        `| "iptos" @@`
+	Dscp          *DscpMatch              `| "dscp" @@`
+	Ecn           *EcnMatch               `| "ecn" @@`
+	SamplingRate  *SamplingRateRangeMatch `| "samplingrate" @@`
+	Icmp          *IcmpMatch              `| "icmp" @@`
+	Bps           *BpsRangeMatch          `| "bps" @@`
+	Pps           *PpsRangeMatch          `| "pps" @@`
+	PassesThrough *PassesThroughListMatch `| "passes-through" @@`
 }
 
 func (o RegularMatchGroup) children() []Node {
@@ -291,7 +291,12 @@ type BpsRangeMatch struct{ NumericRange }
 
 type PpsRangeMatch struct{ NumericRange }
 
-type PassesThroughRangeMatch struct{ NumericRange }
+type PassesThroughListMatch struct {
+	BranchNode
+	Numbers []Number `@Number @Number*`
+}
+
+func (o PassesThroughListMatch) children() []Node { return nil }
 
 // Directional Matches:
 // * anything that has further sub commands or accepts fancy data

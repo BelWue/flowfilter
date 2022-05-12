@@ -128,8 +128,8 @@ func (p *Printer) Visit(n parser.Node, next func() error) error {
 		p.output = append(p.output, "port")
 	case *parser.PpsRangeMatch:
 		p.output = append(p.output, "pps")
-	case *parser.PassesThroughRangeMatch:
-		p.output = append(p.output, "via")
+	case *parser.PassesThroughListMatch:
+		p.output = append(p.output, "passes-through")
 	case *parser.ProtoKey:
 		if magic, ok := reverseMap(parser.ProtoMagicMap)[uint64(*node)]; ok {
 			p.output = append(p.output, magic)

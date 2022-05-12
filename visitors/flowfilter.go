@@ -78,7 +78,7 @@ func (f *Filter) Visit(n parser.Node, next func() error) error {
 	case *parser.PacketRangeMatch:
 	case *parser.PortRangeMatch:
 	case *parser.PpsRangeMatch:
-	case *parser.PassesThroughRangeMatch:
+	case *parser.PassesThroughListMatch:
 	case *parser.ProtoKey:
 	case *parser.ProtoMatch:
 	case *parser.RangeEnd:
@@ -383,13 +383,27 @@ func (f *Filter) Visit(n parser.Node, next func() error) error {
 		if err != nil {
 			return fmt.Errorf("Bad range: %v.", err)
 		}
-	case *parser.PassesThroughRangeMatch:
-		for _, asn := range f.flowmsg.ASPath {
-			result, err := processNumericRange(node.NumericRange, uint64(asn))
-			if err != nil {
-				return fmt.Errorf("Bad range: %v.", err)
+	case *parser.PassesThroughListMatch:
+		sliceEq := func(a []parser.Number, b []uint32) bool {
+			for i, v := range a {
+				if uint32(v) != b[i] {
+					return false
+				}
 			}
-			(*node).EvalResult = (*node).EvalResult || result
+			return true
+		}
+
+		fmt.Printf("comparing: %v %+v \n", f.flowmsg.ASPath, node.Numbers)
+		for i := range f.flowmsg.ASPath {
+			if i+len(node.Numbers) > len(f.flowmsg.ASPath) {
+				break
+			}
+			if sliceEq(node.Numbers, f.flowmsg.ASPath[i:i+len(node.Numbers)]) {
+				(*node).EvalResult = true
+				break
+			} else {
+				(*node).EvalResult = false
+			}
 		}
 	case *parser.ProtoMatch:
 		switch {
