@@ -106,13 +106,14 @@ type RegularMatchGroup struct {
 	Icmp          *IcmpMatch              `| "icmp" @@`
 	Bps           *BpsRangeMatch          `| "bps" @@`
 	Pps           *PpsRangeMatch          `| "pps" @@`
+	PassesThrough *PassesThroughListMatch `| "passes-through" @@`
 }
 
 func (o RegularMatchGroup) children() []Node {
 	return []Node{o.Router, o.NextHop, o.Bytes, o.Packets, o.RemoteCountry,
 		o.FlowDirection, o.Normalized, o.Duration, o.Etype, o.Proto,
 		o.Status, o.TcpFlags, o.IPTos, o.Dscp, o.Ecn, o.SamplingRate,
-		o.Icmp, o.Bps, o.Pps}
+		o.Icmp, o.Bps, o.Pps, o.PassesThrough}
 }
 
 type RouterMatch struct {
@@ -289,6 +290,13 @@ func (o IcmpMatch) children() []Node {
 type BpsRangeMatch struct{ NumericRange }
 
 type PpsRangeMatch struct{ NumericRange }
+
+type PassesThroughListMatch struct {
+	BranchNode
+	Numbers []Number `@Number @Number*`
+}
+
+func (o PassesThroughListMatch) children() []Node { return nil }
 
 // Directional Matches:
 // * anything that has further sub commands or accepts fancy data

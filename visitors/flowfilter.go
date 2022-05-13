@@ -6,11 +6,11 @@ import (
 	"strings"
 
 	"github.com/bwNetFlow/flowfilter/parser"
-	flow "github.com/bwNetFlow/protobuf/go"
+	"github.com/bwNetFlow/flowpipeline/pb"
 )
 
 type Filter struct {
-	flowmsg     *flow.FlowMessage
+	flowmsg     *pb.EnrichedFlow
 	__direction string // this is super hacky
 }
 
@@ -38,7 +38,7 @@ func processNumericRange(node parser.NumericRange, compare uint64) (bool, error)
 	return false, err
 }
 
-func (f *Filter) CheckFlow(expr *parser.Expression, flowmsg *flow.FlowMessage) (bool, error) {
+func (f *Filter) CheckFlow(expr *parser.Expression, flowmsg *pb.EnrichedFlow) (bool, error) {
 	f.flowmsg = flowmsg                // provide current flow to actual Visitor
 	err := parser.Visit(expr, f.Visit) // run the Visitor
 	return expr.EvalResult, err
@@ -78,6 +78,7 @@ func (f *Filter) Visit(n parser.Node, next func() error) error {
 	case *parser.PacketRangeMatch:
 	case *parser.PortRangeMatch:
 	case *parser.PpsRangeMatch:
+	case *parser.PassesThroughListMatch:
 	case *parser.ProtoKey:
 	case *parser.ProtoMatch:
 	case *parser.RangeEnd:
@@ -191,6 +192,8 @@ func (f *Filter) Visit(n parser.Node, next func() error) error {
 			(*node).EvalResult = node.Bps.EvalResult
 		case node.Pps != nil:
 			(*node).EvalResult = node.Pps.EvalResult
+		case node.PassesThrough != nil:
+			(*node).EvalResult = node.PassesThrough.EvalResult
 		}
 	case *parser.DirectionalMatchGroup:
 		if node.Direction == nil {
@@ -377,6 +380,31 @@ func (f *Filter) Visit(n parser.Node, next func() error) error {
 		}
 		pps := f.flowmsg.Packets / duration
 		(*node).EvalResult, err = processNumericRange(node.NumericRange, pps)
+		if err != nil {
+			return fmt.Errorf("Bad range: %v.", err)
+		}
+	case *parser.PassesThroughListMatch:
+		sliceEq := func(a []parser.Number, b []uint32) bool {
+			for i, v := range a {
+				if uint32(v) != b[i] {
+					return false
+				}
+			}
+			return true
+		}
+
+		fmt.Printf("comparing: %v %+v \n", f.flowmsg.ASPath, node.Numbers)
+		for i := range f.flowmsg.ASPath {
+			if i+len(node.Numbers) > len(f.flowmsg.ASPath) {
+				break
+			}
+			if sliceEq(node.Numbers, f.flowmsg.ASPath[i:i+len(node.Numbers)]) {
+				(*node).EvalResult = true
+				break
+			} else {
+				(*node).EvalResult = false
+			}
+		}
 	case *parser.ProtoMatch:
 		switch {
 		case node.Proto != nil:
