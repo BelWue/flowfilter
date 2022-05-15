@@ -4,6 +4,10 @@ github.com/alecthomas/repr v0.0.0-20181024024818-d37bc2a10ba1 h1:GDQdwm/gAcJcLAK
 github.com/alecthomas/repr v0.0.0-20181024024818-d37bc2a10ba1/go.mod h1:xTS7Pm1pD1mvyM075QCDSRqH6qRLXylzS24ZTpRiSzQ=
 github.com/bwNetFlow/flowpipeline v0.8.0-beta.0.20220513125019-53402b7ca136 h1:0pEIWhfpdjDDcg0wm1riDIHrvE5Um5yeM0y/SxPM/cg=
 github.com/bwNetFlow/flowpipeline v0.8.0-beta.0.20220513125019-53402b7ca136/go.mod h1:waZpQfF9DHC8cHe2al020bPE1lHhsvgeYLE9Pv4kt1U=
+github.com/bwNetFlow/flowpipeline v0.8.0-beta.0.20220515080831-11dc7fcd9317 h1:Z8BGJkYunvl0I7vtjDV7pTWXEB+939B0/BVbpJlXfDc=
+github.com/bwNetFlow/flowpipeline v0.8.0-beta.0.20220515080831-11dc7fcd9317/go.mod h1:XwgoUgLpA9KW8KqgF6+47JME+skWmnt973DNu4YRHLM=
+github.com/bwNetFlow/flowpipeline v0.8.0-beta.0.20220515091212-a872292d0ee5 h1:yOOwY5nP1jSz0QC2X8rbrRNnaJbaXPU2PIQmS33dnU0=
+github.com/bwNetFlow/flowpipeline v0.8.0-beta.0.20220515091212-a872292d0ee5/go.mod h1:XwgoUgLpA9KW8KqgF6+47JME+skWmnt973DNu4YRHLM=
 github.com/bwNetFlow/protobuf/go v0.0.0-20211004083441-61e193b4b342 h1:CrEmmSVFs3Ssceezrj/KyLuTvelGH8CZkNLgVxYrQ4o=
 github.com/bwNetFlow/protobuf/go v0.0.0-20211004083441-61e193b4b342/go.mod h1:kBaPxJ+ZXKXx3DoYF8OQdxtkHtH2xhdUIL51a4OE3as=
 github.com/davecgh/go-spew v1.1.0/go.mod h1:J7Y8YcW2NihsgmVo/mv3lAwl/skON4iLHjSsI+c5H38=

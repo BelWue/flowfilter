@@ -114,10 +114,16 @@ func (p *Printer) Visit(n parser.Node, next func() error) error {
 		p.output = append(p.output, "interface")
 	case *parser.IPTosRangeMatch:
 		p.output = append(p.output, "iptos")
+	case *parser.LocalPrefRangeMatch:
+		p.output = append(p.output, "localpref")
+	case *parser.MedRangeMatch:
+		p.output = append(p.output, "med")
 	case *parser.NetsizeRangeMatch:
 		p.output = append(p.output, "netsize")
 	case *parser.NextHopMatch:
 		p.output = append(p.output, "nexthop")
+	case *parser.NextHopAsnMatch:
+		p.output = append(p.output, "nexthopasn")
 	case *parser.NormalizedMatch:
 		p.output = append(p.output, "normalized")
 	case *parser.Number:
@@ -170,6 +176,14 @@ func (p *Printer) Visit(n parser.Node, next func() error) error {
 		}
 	case *parser.TcpFlagsMatch:
 		p.output = append(p.output, "tcpflags")
+	case *parser.RpkiKey:
+		if magic, ok := reverseMap(parser.RpkiMagicMap)[uint64(*node)]; ok {
+			p.output = append(p.output, magic)
+		} else {
+			p.output = append(p.output, "?")
+		}
+	case *parser.RpkiMatch:
+		p.output = append(p.output, "rpki")
 	case *parser.VrfRangeMatch:
 		p.output = append(p.output, "vrf")
 	default:

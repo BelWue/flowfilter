@@ -17,9 +17,10 @@ var (
 		{Name: "ProtoMagic", Pattern: `\b(icmp|tcp|udp|icmpv6|ipip|vrrp)\b`},
 		{Name: "StatusMagic", Pattern: `\b(forwarded|dropped|acldeny|acldrop|unroutable|consumed|policerdrop)\b`},
 		{Name: "TcpFlagsMagic", Pattern: `\b(fin|syn|rst|psh|ack|urg|synack|cwr|ece)\b`},
+		{Name: "RpkiMagic", Pattern: `\b(valid|invalid|notfound|unknown)\b`},
 		// actual match keywords
 		{Name: "Direction", Pattern: `\b(src|dst)\b`},
-		{Name: "Match", Pattern: `\b(bytes|packets|port|asn|passes-through|interface|iface|address|router|country|direction|duration|etype|proto|status|tcpflags|iptos|dscp|ecn|nexthop|netsize|vrf|samplingrate|cid|icmp|bps|pps)\b`},
+		{Name: "Match", Pattern: `\b(bytes|packets|port|asn|passes-through|interface|iface|address|router|country|direction|duration|etype|proto|status|tcpflags|iptos|dscp|ecn|nexthop|netsize|vrf|samplingrate|cid|icmp|bps|pps|med|localpref|rpki|nexthopasn)\b`},
 		{Name: "Standalone", Pattern: `\b(incoming|outgoing|normalized)\b`},
 		// subcommands
 		{Name: "IfaceSubcommands", Pattern: `\b(name|desc|speed)\b`},
@@ -103,6 +104,11 @@ var (
 	}
 	DscpMagicMap = map[string]uint64{ // explicit
 		"default": 0b000000,
+	}
+	RpkiMagicMap = map[string]uint64{"unknown": 0,
+		"valid":    1,
+		"notfound": 2,
+		"invalid":  3,
 	}
 )
 

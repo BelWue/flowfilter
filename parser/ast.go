@@ -89,6 +89,7 @@ type RegularMatchGroup struct {
 	BranchNode
 	Router        *RouterMatch            `"router" @@`
 	NextHop       *NextHopMatch           `| "nexthop" @@`
+	NextHopAsn    *NextHopAsnMatch        `| "nexthopasn" @@`
 	Bytes         *ByteRangeMatch         `| "bytes" @@`
 	Packets       *PacketRangeMatch       `| "packets" @@`
 	RemoteCountry *RemoteCountryMatch     `| "country" @@`
@@ -107,13 +108,16 @@ type RegularMatchGroup struct {
 	Bps           *BpsRangeMatch          `| "bps" @@`
 	Pps           *PpsRangeMatch          `| "pps" @@`
 	PassesThrough *PassesThroughListMatch `| "passes-through" @@`
+	Med           *MedRangeMatch          `| "med" @@`
+	LocalPref     *LocalPrefRangeMatch    `| "localpref" @@`
+	Rpki          *RpkiMatch              `| "rpki" @@`
 }
 
 func (o RegularMatchGroup) children() []Node {
-	return []Node{o.Router, o.NextHop, o.Bytes, o.Packets, o.RemoteCountry,
+	return []Node{o.Router, o.NextHop, o.NextHopAsn, o.Bytes, o.Packets, o.RemoteCountry,
 		o.FlowDirection, o.Normalized, o.Duration, o.Etype, o.Proto,
 		o.Status, o.TcpFlags, o.IPTos, o.Dscp, o.Ecn, o.SamplingRate,
-		o.Icmp, o.Bps, o.Pps, o.PassesThrough}
+		o.Icmp, o.Bps, o.Pps, o.PassesThrough, o.Med, o.LocalPref, o.Rpki}
 }
 
 type RouterMatch struct {
@@ -129,6 +133,13 @@ type NextHopMatch struct {
 }
 
 func (o NextHopMatch) children() []Node { return nil }
+
+type NextHopAsnMatch struct {
+	BranchNode
+	Asn *uint32 `@Number`
+}
+
+func (o NextHopAsnMatch) children() []Node { return nil }
 
 type ByteRangeMatch struct{ NumericRange }
 
@@ -297,6 +308,28 @@ type PassesThroughListMatch struct {
 }
 
 func (o PassesThroughListMatch) children() []Node { return nil }
+
+type MedRangeMatch struct{ NumericRange }
+
+type LocalPrefRangeMatch struct{ NumericRange }
+
+type RpkiMatch struct {
+	BranchNode
+	RpkiKey *RpkiKey `@RpkiMagic`
+}
+
+func (o RpkiMatch) children() []Node {
+	return []Node{o.RpkiKey}
+}
+
+type RpkiKey Number
+
+func (o RpkiKey) children() []Node { return nil }
+
+func (o *RpkiKey) Capture(values []string) error {
+	*o = RpkiKey(RpkiMagicMap[values[0]])
+	return nil
+}
 
 // Directional Matches:
 // * anything that has further sub commands or accepts fancy data

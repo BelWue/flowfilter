@@ -77,6 +77,7 @@ Matches use different literals in different constellations, and some matches acc
 |       `ds` | `ce`, `ect0`, `ect1`
 |   `status` | `forwarded`, `dropped`, `acldeny`, `acldrop`, `policerdrop`, `unroutable`, `consumed`
 | `tcpflags` | `fin`, `syn`, `rst`, `psh`, `ack`, `urg`, `synack`, `cwr`, `ece`
+|     `rpki` | `valid`, `invalid`, `notfound`, `unknown`
 
 #### Directional Matches
 
@@ -100,6 +101,7 @@ Matches use different literals in different constellations, and some matches acc
 | -------------------:| -------------------- | -------------------------------------------------------------- | ----------------------------------------------------------------------------------------------- |
 |            `router` | `<address>`          |                                                                | See `address` match. Refers to the router the Netflow originated on, aka the sampler address.
 |           `nexthop` | `<address>`          |                                                                | See `address` match.
+|        `nexthopasn` | `<int>`              |                                                                |
 |             `bytes` | `<range>`            |                                                                | Refers to the bytes transported by the flow.
 |           `packets` | `<range>`            |                                                                | Refers to the packets transported by the flow.
 |           `country` | `<cc>`               | `DE` (Germany), `US` (US)                                      | Refers to the remote addresses country code as added to the flow by some lookup (if applicable).
@@ -120,6 +122,10 @@ Matches use different literals in different constellations, and some matches acc
 |         `icmp code` | `<int>`              | `icmp type 3 and icmp code 3` (port unreachable)               | Also ensures `proto icmp`. Calculation based on destination port (Netflow v9).
 |               `bps` | `<range>`            | `>1048576` (>1Mbps), `>1073741824` (>1Gbps)                    | Calculated as average based on byte count and flow duration.
 |               `pps` | `<range>`            | `>1000000` (>1Mpps), `>1000000000` (>1Gpps)                    | Calculated as average based on packet count and flow duration.
+|               `med` | `<range>`            | `<200`                                                         |
+|         `localpref` | `<range>`            | `>100`                                                         |
+|              `rpki` | `<rpki>`             | `valid`, `invalid`                                             |
+|    `passes-through` | `<int> ...`          | `100 102` (string of ASNs, in order), `553`                    | Can be specified multiple times, to denote a segment of ASNs that occur in a path.
 
 #### Examples
 

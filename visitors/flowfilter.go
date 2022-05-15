@@ -71,8 +71,11 @@ func (f *Filter) Visit(n parser.Node, next func() error) error {
 	case *parser.IfSpeedRangeMatch:
 	case *parser.InterfaceMatch:
 	case *parser.IPTosRangeMatch:
+	case *parser.MedRangeMatch:
+	case *parser.LocalPrefRangeMatch:
 	case *parser.NetsizeRangeMatch:
 	case *parser.NextHopMatch:
+	case *parser.NextHopAsnMatch:
 	case *parser.NormalizedMatch:
 	case *parser.Number:
 	case *parser.PacketRangeMatch:
@@ -85,6 +88,8 @@ func (f *Filter) Visit(n parser.Node, next func() error) error {
 	case *parser.RegularMatchGroup:
 	case *parser.RemoteCountryMatch:
 	case *parser.RouterMatch:
+	case *parser.RpkiKey:
+	case *parser.RpkiMatch:
 	case *parser.SamplingRateRangeMatch:
 	case *parser.Statement:
 	case *parser.StatusKey:
@@ -158,6 +163,8 @@ func (f *Filter) Visit(n parser.Node, next func() error) error {
 			(*node).EvalResult = node.Router.EvalResult
 		case node.NextHop != nil:
 			(*node).EvalResult = node.NextHop.EvalResult
+		case node.NextHopAsn != nil:
+			(*node).EvalResult = node.NextHopAsn.EvalResult
 		case node.Bytes != nil:
 			(*node).EvalResult = node.Bytes.EvalResult
 		case node.Packets != nil:
@@ -180,6 +187,10 @@ func (f *Filter) Visit(n parser.Node, next func() error) error {
 			(*node).EvalResult = node.TcpFlags.EvalResult
 		case node.IPTos != nil:
 			(*node).EvalResult = node.IPTos.EvalResult
+		case node.LocalPref != nil:
+			(*node).EvalResult = node.LocalPref.EvalResult
+		case node.Med != nil:
+			(*node).EvalResult = node.Med.EvalResult
 		case node.Dscp != nil:
 			(*node).EvalResult = node.Dscp.EvalResult
 		case node.Ecn != nil:
@@ -194,6 +205,8 @@ func (f *Filter) Visit(n parser.Node, next func() error) error {
 			(*node).EvalResult = node.Pps.EvalResult
 		case node.PassesThrough != nil:
 			(*node).EvalResult = node.PassesThrough.EvalResult
+		case node.Rpki != nil:
+			(*node).EvalResult = node.Rpki.EvalResult
 		}
 	case *parser.DirectionalMatchGroup:
 		if node.Direction == nil {
@@ -346,6 +359,20 @@ func (f *Filter) Visit(n parser.Node, next func() error) error {
 				*node.Lower,
 				*node.Upper)
 		}
+	case *parser.LocalPrefRangeMatch:
+		(*node).EvalResult, err = processNumericRange(node.NumericRange, uint64(f.flowmsg.LocalPref))
+		if err != nil {
+			return fmt.Errorf("Bad localpref range, lower %d > upper %d",
+				*node.Lower,
+				*node.Upper)
+		}
+	case *parser.MedRangeMatch:
+		(*node).EvalResult, err = processNumericRange(node.NumericRange, uint64(f.flowmsg.Med))
+		if err != nil {
+			return fmt.Errorf("Bad med range, lower %d > upper %d",
+				*node.Lower,
+				*node.Upper)
+		}
 	case *parser.NetsizeRangeMatch:
 		(*node).EvalResultSrc, _ = processNumericRange(node.NumericRange, uint64(f.flowmsg.SrcNet))
 		(*node).EvalResultDst, err = processNumericRange(node.NumericRange, uint64(f.flowmsg.DstNet))
@@ -356,6 +383,8 @@ func (f *Filter) Visit(n parser.Node, next func() error) error {
 		}
 	case *parser.NextHopMatch:
 		(*node).EvalResult = net.IP(f.flowmsg.NextHop).Equal(*node.Address)
+	case *parser.NextHopAsnMatch:
+		(*node).EvalResult = f.flowmsg.NextHopAS == *node.Asn
 	case *parser.NormalizedMatch:
 		(*node).EvalResult = f.flowmsg.Normalized == 1
 	case *parser.PacketRangeMatch:
@@ -393,7 +422,6 @@ func (f *Filter) Visit(n parser.Node, next func() error) error {
 			return true
 		}
 
-		fmt.Printf("comparing: %v %+v \n", f.flowmsg.ASPath, node.Numbers)
 		for i := range f.flowmsg.ASPath {
 			if i+len(node.Numbers) > len(f.flowmsg.ASPath) {
 				break
@@ -416,6 +444,12 @@ func (f *Filter) Visit(n parser.Node, next func() error) error {
 		(*node).EvalResult = strings.Contains(f.flowmsg.RemoteCountry, strings.ToUpper(string(*node.CountryCode)))
 	case *parser.RouterMatch:
 		(*node).EvalResult = net.IP(f.flowmsg.SamplerAddress).Equal(*node.Address)
+	case *parser.RpkiMatch:
+		if node.RpkiKey == nil {
+			(*node).EvalResult = false
+			break
+		}
+		(*node).EvalResult = f.flowmsg.ValidationStatus == pb.EnrichedFlow_ValidationStatusType(*node.RpkiKey)
 	case *parser.SamplingRateRangeMatch:
 		(*node).EvalResult, err = processNumericRange(node.NumericRange, f.flowmsg.SamplingRate)
 		if err != nil {
