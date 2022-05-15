@@ -4,7 +4,7 @@ go 1.18
 
 require (
 	github.com/alecthomas/participle/v2 v2.0.0-alpha8
-	github.com/bwNetFlow/flowpipeline v0.8.0-beta.0.20220513125019-53402b7ca136
+	github.com/bwNetFlow/flowpipeline v0.8.0-beta.0.20220515091212-a872292d0ee5
 )
 
 require (

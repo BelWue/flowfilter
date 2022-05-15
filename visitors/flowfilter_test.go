@@ -52,6 +52,10 @@ var (
 		Cid:              123,        // uint32
 		SrcCid:           10,         // uint32
 		DstCid:           123,        // uint32
+		Med:              100,        // uint32
+		LocalPref:        100,        // uint32
+		NextHopAS:        553,        // uint32
+		ValidationStatus: 2,          // uint32
 
 		// TODO: set but kinda useless for a filter language?
 		// Type:		// int32 // 0, sFlow 1, NFv5 2, NFv9 3, IPFIX 4
@@ -194,6 +198,10 @@ func TestAccept(t *testing.T) {
 		// `passes-through` `<range>`
 		`passes-through 553`,
 		`passes-through 553 554 555`,
+		`med <200`,
+		`localpref >99`,
+		`nexthopasn 553`,
+		`rpki notfound`,
 	}
 
 	for _, test := range tests {
@@ -299,6 +307,10 @@ func TestReject(t *testing.T) {
 		`passes-through 666`,
 		`passes-through 555 554`,
 		`passes-through 553 554 555 556`,
+		`med >200`,
+		`localpref <99`,
+		`nexthopasn 554`,
+		`rpki valid`,
 	}
 
 	for _, test := range tests {
