@@ -27,8 +27,8 @@ var (
 		{Name: "IcmpSubcommands", Pattern: `\b(type|code)\b`},
 		// generic datatype-style tokens
 		{Name: "CountryCode", Pattern: `\b[a-zA-Z]{2}\b`}, // needs to be after 'or' and 'ce'
-		{Name: "Address", Pattern: `[1-9a-f][0-9a-f]*(\.|:)[0-9a-f.:]+`},
-		{Name: "Number", Pattern: `[0-9a-fx]+`},
+		{Name: "Address", Pattern: `[1-9a-fA-F][0-9a-fA-F]*(\.|:)[0-9a-fA-F.:]+`},
+		{Name: "Number", Pattern: `[0-9a-fA-Fx]+`},
 		{Name: "Unary", Pattern: `<|>`},
 		{Name: "Symbol", Pattern: `-|/|\(|\)`},
 		{Name: "String", Pattern: `'[^']*'|"[^"]*"`},

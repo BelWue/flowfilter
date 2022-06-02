@@ -112,6 +112,7 @@ func TestAccept(t *testing.T) {
 		`src address 10.0.0.200`,
 		`dst address 2001:7c0:0:254::6`,
 		`address 2001:7c0:0:254::/64`,
+		`address 2001:7C0:0:254::/64`,
 		`address 10.0.0.200 or address 8.8.8.8`,
 		// `i[nter]face` `<int>`
 		`iface 1`,
@@ -276,6 +277,7 @@ func TestReject(t *testing.T) {
 		`duration 251`,
 		// `etype` `<int>|etype
 		`etype 0x0801`,
+		`etype 0x08dD`,
 		`etype 2042`,
 		`etype ipv6`,
 		// `proto` `<int>|proto
