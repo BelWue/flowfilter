@@ -3,7 +3,7 @@ module github.com/bwNetFlow/flowfilter
 go 1.18
 
 require (
-	github.com/alecthomas/participle/v2 v2.0.0-beta.1
+	github.com/alecthomas/participle/v2 v2.0.0-beta.2
 	github.com/bwNetFlow/flowpipeline v0.9.3-beta
 )
 
