@@ -158,7 +158,7 @@ func TestAccept(t *testing.T) {
 		`direction incoming`,
 		`incoming and country de`,
 		// `normalized`
-		`not normalized`,
+		`normalized 0`,
 		// `duration` `<range>`
 		`duration >100 and not status dropped`,
 		`duration 250`,
@@ -271,7 +271,7 @@ func TestReject(t *testing.T) {
 		`direction outgoing`,
 		`outgoing and country de`,
 		// `normalized`
-		`normalized`,
+		`normalized 1`,
 		// `duration` `<range>`
 		`duration <100 and not status dropped`,
 		`duration 251`,

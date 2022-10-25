@@ -94,7 +94,7 @@ type RegularMatchGroup struct {
 	Packets       *PacketRangeMatch       `| "packets" @@`
 	RemoteCountry *RemoteCountryMatch     `| "country" @@`
 	FlowDirection *FlowDirectionMatch     `| "direction"? @@`
-	Normalized    *NormalizedMatch        `| @@`
+	Normalized    *NormalizedMatch        `| "normalized"? @@`
 	Duration      *DurationRangeMatch     `| "duration" @@`
 	Etype         *EtypeMatch             `| "etype" @@`
 	Proto         *ProtoMatch             `| "proto" @@`
@@ -161,7 +161,7 @@ func (o FlowDirectionMatch) children() []Node { return nil }
 
 type NormalizedMatch struct {
 	BranchNode
-	Normalized bool `@"normalized"`
+	Normalized *String `@("1"|"0")`
 }
 
 func (o NormalizedMatch) children() []Node { return nil }

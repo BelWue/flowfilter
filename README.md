@@ -108,7 +108,7 @@ Matches use different literals in different constellations, and some matches acc
 |         `direction` | `incoming\|outgoing` |                                                                | Refers to the direction as reported in the flow.
 |          `incoming` |                      |                                                                | Shorthand for `direction`.
 |          `outgoing` |                      |                                                                | Shorthand for `direction`.
-|        `normalized` |                      |                                                                | Normalization status in regard to a flow's sampling rate (if applicable).
+|        `normalized` | `1\|0`                  |                                                                | Normalization status in regard to a flow's sampling rate (if applicable).
 |          `duration` | `<range>`            | `>0` (longer flows)                                            | Time between a flows start and its end, in seconds.
 |             `etype` | `<int>\|<etype>`     | `ipv6`, `0x86DD` (IPv6)                                        |
 |             `proto` | `<int>\|<proto>`     | `tcp`, `6` (TCP)                                               |
