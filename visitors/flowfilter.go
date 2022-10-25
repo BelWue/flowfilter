@@ -386,11 +386,7 @@ func (f *Filter) Visit(n parser.Node, next func() error) error {
 	case *parser.NextHopAsnMatch:
 		(*node).EvalResult = f.flowmsg.NextHopAS == *node.Asn
 	case *parser.NormalizedMatch:
-		if *node.Normalized == "1" {
-			(*node).EvalResult = f.flowmsg.FlowDirection == 1
-		} else {
-			(*node).EvalResult = f.flowmsg.FlowDirection != 1
-		}
+		(*node).EvalResult = f.flowmsg.Normalized == 1
 	case *parser.PacketRangeMatch:
 		(*node).EvalResult, err = processNumericRange(node.NumericRange, f.flowmsg.Packets)
 		if err != nil {
