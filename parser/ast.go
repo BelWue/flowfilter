@@ -94,7 +94,7 @@ type RegularMatchGroup struct {
 	Packets       *PacketRangeMatch       `| "packets" @@`
 	RemoteCountry *RemoteCountryMatch     `| "country" @@`
 	FlowDirection *FlowDirectionMatch     `| "direction"? @@`
-	Normalized    *NormalizedMatch        `| ""? @@`
+	Normalized    *NormalizedMatch        `| @@`
 	Duration      *DurationRangeMatch     `| "duration" @@`
 	Etype         *EtypeMatch             `| "etype" @@`
 	Proto         *ProtoMatch             `| "proto" @@`
