@@ -5,7 +5,7 @@ import (
 	// "net"
 	"testing"
 
-	"github.com/bwNetFlow/flowfilter/parser"
+	"github.com/BelWue/flowfilter/parser"
 	"github.com/bwNetFlow/flowpipeline/pb"
 )
 
