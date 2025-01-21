@@ -7,7 +7,7 @@ import (
 	"strings"
 
 	// "github.com/alecthomas/repr"
-	"github.com/bwNetFlow/flowfilter/parser"
+	"github.com/BelWue/flowfilter/parser"
 )
 
 type Printer struct {

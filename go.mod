@@ -1,4 +1,4 @@
-module github.com/bwNetFlow/flowfilter
+module github.com/BelWue/flowfilter
 
 go 1.18
 

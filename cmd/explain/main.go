@@ -5,8 +5,8 @@ import (
 	"os"
 	"strings"
 
-	"github.com/bwNetFlow/flowfilter/parser"
-	"github.com/bwNetFlow/flowfilter/visitors"
+	"github.com/BelWue/flowfilter/parser"
+	"github.com/BelWue/flowfilter/visitors"
 )
 
 func main() {

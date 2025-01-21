@@ -3,7 +3,7 @@ package visitors
 import (
 	"fmt"
 
-	"github.com/bwNetFlow/flowfilter/parser"
+	"github.com/BelWue/flowfilter/parser"
 )
 
 type Noop struct {
