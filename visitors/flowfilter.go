@@ -6,7 +6,7 @@ import (
 	"strings"
 
 	"github.com/BelWue/flowfilter/parser"
-	"github.com/bwNetFlow/flowpipeline/pb"
+	"github.com/BelWue/flowpipeline/pb"
 )
 
 type Filter struct {
@@ -70,7 +70,7 @@ func (f *Filter) Visit(n parser.Node, next func() error) error {
 	case *parser.IcmpMatch:
 	case *parser.IfSpeedRangeMatch:
 	case *parser.InterfaceMatch:
-	case *parser.IPTosRangeMatch:
+	case *parser.IpTosRangeMatch:
 	case *parser.MedRangeMatch:
 	case *parser.LocalPrefRangeMatch:
 	case *parser.NetsizeRangeMatch:
@@ -127,8 +127,8 @@ func (f *Filter) Visit(n parser.Node, next func() error) error {
 			(*node).EvalResultDst = net.IP(f.flowmsg.DstAddr).Equal(*node.Address)
 		}
 	case *parser.AsnRangeMatch:
-		(*node).EvalResultSrc, _ = processNumericRange(node.NumericRange, uint64(f.flowmsg.SrcAS))
-		(*node).EvalResultDst, err = processNumericRange(node.NumericRange, uint64(f.flowmsg.DstAS))
+		(*node).EvalResultSrc, _ = processNumericRange(node.NumericRange, uint64(f.flowmsg.SrcAs))
+		(*node).EvalResultDst, err = processNumericRange(node.NumericRange, uint64(f.flowmsg.DstAs))
 		if err != nil { // errs from above calls will be the same anyways
 			return fmt.Errorf("Bad ASN range, lower %d > upper %d",
 				*node.Lower,
@@ -185,8 +185,8 @@ func (f *Filter) Visit(n parser.Node, next func() error) error {
 			(*node).EvalResult = node.Status.EvalResult
 		case node.TcpFlags != nil:
 			(*node).EvalResult = node.TcpFlags.EvalResult
-		case node.IPTos != nil:
-			(*node).EvalResult = node.IPTos.EvalResult
+		case node.IpTos != nil:
+			(*node).EvalResult = node.IpTos.EvalResult
 		case node.LocalPref != nil:
 			(*node).EvalResult = node.LocalPref.EvalResult
 		case node.Med != nil:
@@ -271,16 +271,16 @@ func (f *Filter) Visit(n parser.Node, next func() error) error {
 	case *parser.DscpMatch:
 		switch {
 		case node.Dscp != nil:
-			(*node).EvalResult = f.flowmsg.IPTos>>2 == uint32(*node.Dscp)
+			(*node).EvalResult = f.flowmsg.IpTos>>2 == uint32(*node.Dscp)
 		case node.DscpKey != nil:
-			(*node).EvalResult = f.flowmsg.IPTos>>2 == uint32(*node.DscpKey)
+			(*node).EvalResult = f.flowmsg.IpTos>>2 == uint32(*node.DscpKey)
 		}
 	case *parser.EcnMatch:
 		switch {
 		case node.Ecn != nil:
-			(*node).EvalResult = f.flowmsg.IPTos&0b00000011 == uint32(*node.Ecn)
+			(*node).EvalResult = f.flowmsg.IpTos&0b00000011 == uint32(*node.Ecn)
 		case node.EcnKey != nil:
-			(*node).EvalResult = f.flowmsg.IPTos&0b00000011 == uint32(*node.EcnKey)
+			(*node).EvalResult = f.flowmsg.IpTos&0b00000011 == uint32(*node.EcnKey)
 		}
 	case *parser.EtypeMatch:
 		switch {
@@ -352,8 +352,8 @@ func (f *Filter) Visit(n parser.Node, next func() error) error {
 			(*node).EvalResultSrc = node.Speed.EvalResultSrc
 			(*node).EvalResultDst = node.Speed.EvalResultDst
 		}
-	case *parser.IPTosRangeMatch:
-		(*node).EvalResult, err = processNumericRange(node.NumericRange, uint64(f.flowmsg.IPTos))
+	case *parser.IpTosRangeMatch:
+		(*node).EvalResult, err = processNumericRange(node.NumericRange, uint64(f.flowmsg.IpTos))
 		if err != nil {
 			return fmt.Errorf("Bad iptos range, lower %d > upper %d",
 				*node.Lower,
@@ -384,7 +384,7 @@ func (f *Filter) Visit(n parser.Node, next func() error) error {
 	case *parser.NextHopMatch:
 		(*node).EvalResult = net.IP(f.flowmsg.NextHop).Equal(*node.Address)
 	case *parser.NextHopAsnMatch:
-		(*node).EvalResult = f.flowmsg.NextHopAS == *node.Asn
+		(*node).EvalResult = f.flowmsg.NextHopAs == *node.Asn
 	case *parser.NormalizedMatch:
 		(*node).EvalResult = f.flowmsg.Normalized == 1
 	case *parser.PacketRangeMatch:
@@ -422,11 +422,11 @@ func (f *Filter) Visit(n parser.Node, next func() error) error {
 			return true
 		}
 
-		for i := range f.flowmsg.ASPath {
-			if i+len(node.Numbers) > len(f.flowmsg.ASPath) {
+		for i := range f.flowmsg.AsPath {
+			if i+len(node.Numbers) > len(f.flowmsg.AsPath) {
 				break
 			}
-			if sliceEq(node.Numbers, f.flowmsg.ASPath[i:i+len(node.Numbers)]) {
+			if sliceEq(node.Numbers, f.flowmsg.AsPath[i:i+len(node.Numbers)]) {
 				(*node).EvalResult = true
 				break
 			} else {
@@ -483,13 +483,13 @@ func (f *Filter) Visit(n parser.Node, next func() error) error {
 		}
 		switch {
 		case node.TcpFlags != nil:
-			(*node).EvalResult = f.flowmsg.TCPFlags == uint32(*node.TcpFlags)
+			(*node).EvalResult = f.flowmsg.TcpFlags == uint32(*node.TcpFlags)
 		case node.TcpFlagsKey != nil:
-			(*node).EvalResult = f.flowmsg.TCPFlags&uint32(*node.TcpFlagsKey) == uint32(*node.TcpFlagsKey)
+			(*node).EvalResult = f.flowmsg.TcpFlags&uint32(*node.TcpFlagsKey) == uint32(*node.TcpFlagsKey)
 		}
 	case *parser.VrfRangeMatch:
-		(*node).EvalResultSrc, _ = processNumericRange(node.NumericRange, uint64(f.flowmsg.IngressVrfID))
-		(*node).EvalResultDst, err = processNumericRange(node.NumericRange, uint64(f.flowmsg.EgressVrfID))
+		(*node).EvalResultSrc, _ = processNumericRange(node.NumericRange, uint64(f.flowmsg.IngressVrfId))
+		(*node).EvalResultDst, err = processNumericRange(node.NumericRange, uint64(f.flowmsg.EgressVrfId))
 		if err != nil { // errs from above calls will be the same anyways
 			return fmt.Errorf("Bad ASN range, lower %d > upper %d",
 				*node.Lower,

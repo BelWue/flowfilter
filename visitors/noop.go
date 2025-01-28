@@ -33,7 +33,7 @@ func (noop *Noop) Visit(n parser.Node, next func() error) error {
 	case *parser.IcmpMatch:
 	case *parser.IfSpeedRangeMatch:
 	case *parser.InterfaceMatch:
-	case *parser.IPTosRangeMatch:
+	case *parser.IpTosRangeMatch:
 	case *parser.LocalPrefRangeMatch:
 	case *parser.MedRangeMatch:
 	case *parser.NetsizeRangeMatch:
@@ -92,7 +92,7 @@ func (noop *Noop) Visit(n parser.Node, next func() error) error {
 	case *parser.IcmpMatch:
 	case *parser.IfSpeedRangeMatch:
 	case *parser.InterfaceMatch:
-	case *parser.IPTosRangeMatch:
+	case *parser.IpTosRangeMatch:
 	case *parser.LocalPrefRangeMatch:
 	case *parser.MedRangeMatch:
 	case *parser.NetsizeRangeMatch:

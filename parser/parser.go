@@ -35,7 +35,7 @@ var (
 		{Name: "whitespace", Pattern: `[ \t]+`},
 	})
 
-	parser = participle.MustBuild(&Expression{},
+	parser = participle.MustBuild[Expression](
 		participle.Lexer(bpfLexer),
 		participle.Unquote("String"),
 	)
@@ -113,7 +113,7 @@ var (
 )
 
 func Parse(input string) (*Expression, error) {
-	expr := &Expression{}
-	err := parser.ParseString("", input, expr)
+	expr, err := parser.ParseString("parser", input)
+	print(expr)
 	return expr, err
 }
