@@ -100,7 +100,7 @@ type RegularMatchGroup struct {
 	Proto         *ProtoMatch             `| "proto" @@`
 	Status        *StatusMatch            `| "status" @@`
 	TcpFlags      *TcpFlagsMatch          `| "tcpflags" @@`
-	IPTos         *IPTosRangeMatch        `| "iptos" @@`
+	IpTos         *IpTosRangeMatch        `| "iptos" @@`
 	Dscp          *DscpMatch              `| "dscp" @@`
 	Ecn           *EcnMatch               `| "ecn" @@`
 	SamplingRate  *SamplingRateRangeMatch `| "samplingrate" @@`
@@ -116,7 +116,7 @@ type RegularMatchGroup struct {
 func (o RegularMatchGroup) children() []Node {
 	return []Node{o.Router, o.NextHop, o.NextHopAsn, o.Bytes, o.Packets, o.RemoteCountry,
 		o.FlowDirection, o.Normalized, o.Duration, o.Etype, o.Proto,
-		o.Status, o.TcpFlags, o.IPTos, o.Dscp, o.Ecn, o.SamplingRate,
+		o.Status, o.TcpFlags, o.IpTos, o.Dscp, o.Ecn, o.SamplingRate,
 		o.Icmp, o.Bps, o.Pps, o.PassesThrough, o.Med, o.LocalPref, o.Rpki}
 }
 
@@ -244,7 +244,7 @@ func (o *TcpFlagsKey) Capture(values []string) error {
 	return nil
 }
 
-type IPTosRangeMatch struct{ NumericRange }
+type IpTosRangeMatch struct{ NumericRange }
 
 type DscpMatch struct {
 	BranchNode

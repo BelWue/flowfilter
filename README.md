@@ -115,8 +115,8 @@ Matches use different literals in different constellations, and some matches acc
 |            `status` | `<int>\|<status>`    | `dropped` (any drop), `0b10000000` (dropped unknown only)      | Literal Intergers match exactly, magic strings match as a bit mask.
 |          `tcpflags` | `<int>\|<tcpflags>`  | `ack` (ack in >0 packets), `0b010000` (just ack-only packets)  | Literal Intergers match exactly, magic strings match as a bit mask.
 |             `iptos` | `<range>`            |                                                                |
-|              `dscp` | `<int>\|<dscp>`      | `default` (no class, i.e. 0), `0b0` (same)                     | All matches are exact, against `IPTos>>2`.
-|               `ecn` | `<int>\|<ecn>`       | `ce` (congestion exp. in >0 packets), `0b11` (CE packets only) | All matches are exact, against `IPTos&0b11`.
+|              `dscp` | `<int>\|<dscp>`      | `default` (no class, i.e. 0), `0b0` (same)                     | All matches are exact, against `IpTos>>2`.
+|               `ecn` | `<int>\|<ecn>`       | `ce` (congestion exp. in >0 packets), `0b11` (CE packets only) | All matches are exact, against `IpTos&0b11`.
 |      `samplingrate` | `<range>`            | `<512` (only consider good sampling rate flows)                |
 |         `icmp type` | `<int>`              | `3` (destination unreachable)                                  | Also ensures `proto icmp`. Calculation based on destination port (Netflow v9).
 |         `icmp code` | `<int>`              | `icmp type 3 and icmp code 3` (port unreachable)               | Also ensures `proto icmp`. Calculation based on destination port (Netflow v9).

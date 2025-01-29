@@ -112,7 +112,7 @@ func (p *Printer) Visit(n parser.Node, next func() error) error {
 		p.output = append(p.output, "speed")
 	case *parser.InterfaceMatch:
 		p.output = append(p.output, "interface")
-	case *parser.IPTosRangeMatch:
+	case *parser.IpTosRangeMatch:
 		p.output = append(p.output, "iptos")
 	case *parser.LocalPrefRangeMatch:
 		p.output = append(p.output, "localpref")

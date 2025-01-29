@@ -6,7 +6,7 @@ import (
 	"testing"
 
 	"github.com/BelWue/flowfilter/parser"
-	"github.com/bwNetFlow/flowpipeline/pb"
+	"github.com/BelWue/flowpipeline/pb"
 )
 
 var (
@@ -17,8 +17,8 @@ var (
 		DstAddr:      []byte{32, 1, 7, 192, 0, 0, 2, 84, 0, 0, 0, 0, 0, 0, 0, 6},
 		SrcPort:      0,           // uint32
 		DstPort:      1024,        // uint32
-		SrcAS:        553,         // uint32
-		DstAS:        12345,       // uint32
+		SrcAs:        553,         // uint32
+		DstAs:        12345,       // uint32
 		InIf:         1,           // uint32
 		OutIf:        2,           // uint32
 		SrcIfName:    "Hu0/1/1/4", // string // TODO: check how to use plain goflow
@@ -29,13 +29,13 @@ var (
 		DstIfSpeed:   10000,       // uint32 // TODO: check how to use plain goflow
 		SrcNet:       24,          // uint32
 		DstNet:       11,          // uint32
-		IngressVrfID: 1,           // uint32
-		EgressVrfID:  2,           // uint32
+		IngressVrfId: 1,           // uint32
+		EgressVrfId:  2,           // uint32
 
 		// complex fields
 		SamplerAddress:   []byte{10, 0, 0, 1},
 		NextHop:          []byte{10, 11, 0, 1},
-		ASPath:           []uint32{553, 554, 555},
+		AsPath:           []uint32{553, 554, 555},
 		Bytes:            20490000,   // uint64
 		Packets:          400,        // uint64
 		FlowDirection:    0,          // uint32
@@ -46,15 +46,15 @@ var (
 		Etype:            0x0800,     // uint32
 		Proto:            1,          // uint32
 		ForwardingStatus: 0b01000010, // uint32
-		TCPFlags:         0b010010,   // uint32
-		IPTos:            0b00000011, // uint32
+		TcpFlags:         0b010010,   // uint32
+		IpTos:            0b00000011, // uint32
 		SamplingRate:     32,         // uint64
 		Cid:              123,        // uint32
 		SrcCid:           10,         // uint32
 		DstCid:           123,        // uint32
 		Med:              100,        // uint32
 		LocalPref:        100,        // uint32
-		NextHopAS:        553,        // uint32
+		NextHopAs:        553,        // uint32
 		ValidationStatus: 2,          // uint32
 
 		// TODO: set but kinda useless for a filter language?
@@ -75,13 +75,13 @@ var (
 		// FragmentId:		// uint32
 		// FragmentOffset:	// uint32
 		// BiFlowDirection:	// uint32
-		// NextHopAS:		// uint32
+		// NextHopAs:		// uint32
 		// HasEncap:		// bool
 		// SrcAddrEncap:	// []byte
 		// DstAddrEncap:	// []byte
 		// ProtoEncap:		// uint32
 		// EtypeEncap:		// uint32
-		// IPTosEncap:		// uint32
+		// IpTosEncap:		// uint32
 		// IPTTLEncap:		// uint32
 		// IPv6FlowLabelEncap:	// uint32
 		// FragmentIdEncap:	// uint32
