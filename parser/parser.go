@@ -114,6 +114,5 @@ var (
 
 func Parse(input string) (*Expression, error) {
 	expr, err := parser.ParseString("parser", input)
-	print(expr)
 	return expr, err
 }
